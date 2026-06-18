@@ -3,6 +3,11 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Onboarding the free agent](2026-06-auxin-onboarding.md): bringing
+  the fourth node in was trivial (membership is one inherited baseline) — but a fresh
+  node exercising old infrastructure flushed out three latent bugs: a package cache
+  bound to loopback after a cold boot, cache dirs unwritable from a pre-reflash owner,
+  and first-boot provisioning silently rewriting the hosts file on every boot.
 - **2026-06** — [Pressure-stall metrics, fleet-wide](2026-06-psi-fleetwide.md):
   PSI on every node so one dashboard shows which box is actually straining. A
   one-flag feature that touched the bootloader — including a whitespace edge case

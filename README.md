@@ -54,6 +54,7 @@ flat, trusted LAN.
   - [Onboarding a node](architecture/onboarding.md) — how a freshly-flashed Pi
     becomes a managed, observable member of the fleet.
 - **[Build log](log/)** — dated entries on what got built and what fought back.
+  - [2026-06 — Onboarding the free agent](log/2026-06-auxin-onboarding.md)
   - [2026-06 — Pressure-stall metrics, fleet-wide](log/2026-06-psi-fleetwide.md)
   - [2026-06 — WiFi failover](log/2026-06-wifi-failover.md)
   - [2026-06 — Centralized logging](log/2026-06-centralized-logging.md)

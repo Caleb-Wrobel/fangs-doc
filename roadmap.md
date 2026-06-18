@@ -22,8 +22,10 @@ the ideas worth chewing on while away from the keyboard.
 
 ## The free-agent node
 
-The fourth node (a 16 GB Pi 5) is deliberately uncommitted. Current leaning is
-**local AI/ML**:
+The fourth node (a 16 GB Pi 5) is now a fully onboarded, observable member of the
+fleet — it carries the baseline and nothing else
+([onboarding log](log/2026-06-auxin-onboarding.md)). Its *role* is what stays
+deliberately uncommitted; the current leaning is **local AI/ML**:
 
 - a local LLM runtime + a simple chat UI,
 - an embedding server,
@@ -62,6 +64,8 @@ network.
 
 ## Done recently
 
+- ✅ Onboarded the free-agent node as a managed, observable fleet member — and shook
+  out three latent infra bugs on the way ([log](log/2026-06-auxin-onboarding.md)).
 - ✅ WiFi failover, fleet-wide and physically verified
   ([log](log/2026-06-wifi-failover.md)).
 - ✅ Centralized logs (Alloy → Loki) with nightly backup to the NAS, and a fix for

@@ -41,6 +41,40 @@ next reboot." Pointing it at persistent storage (and configuring the deletion
 store that retention actually needs) fixed it. The takeaway: verify persistence
 empirically, don't assume a default is durable.
 
+## Why node_exporter and Alloy stay separate
+
+There are two agents on every node — **node_exporter** for metrics and **Alloy**
+for logs — and that's a deliberate choice, because it could plausibly be one.
+Alloy is capable of collecting host metrics itself (it can run the same
+node-exporter collectors internally and scrape them), so folding metrics into
+Alloy and dropping node_exporter would mean **fewer moving pieces on
+resource-constrained nodes**. That's a real pull on hardware this small, and it's
+the obvious consolidation to reach for.
+
+The fleet keeps them distinct anyway, for three reasons:
+
+1. **Ecosystem compatibility.** node_exporter is the de-facto standard for host
+   metrics. The huge body of off-the-shelf Grafana dashboards and Prometheus alert
+   rules assume *its* exact metric names and labels — point them at a real
+   node_exporter and they tend to work unmodified. Re-exposing the same data
+   through a different agent invites subtle naming mismatches that turn "import a
+   community dashboard" into "debug why three panels are empty."
+2. **Separation of concerns.** Log shipping and metrics exposition are different
+   jobs with different failure modes. Keeping them in separate processes means a
+   problem in the logging pipeline can't take host metrics down with it (and vice
+   versa), and each can be reasoned about, restarted, or replaced on its own.
+3. **The cost of running both looks acceptable.** node_exporter is lightweight, so
+   carrying it *alongside* Alloy shouldn't meaningfully burden even the smallest
+   node. This is the softest of the three reasons — it's a judgement, not a
+   measurement — so it's flagged as **worth actually profiling someday**: if the
+   two-agent overhead ever turns out to matter on a 1 GB node, the consolidation
+   above is the lever to pull, and reasons (1) and (2) become the price of pulling
+   it.
+
+The short version: the redundancy buys compatibility and isolation cheaply today,
+and the day it stops being cheap is a measurement question left open on the
+[roadmap](../roadmap.md).
+
 ## Reaching the dashboards
 
 Grafana isn't exposed on its raw host:port. It's fronted by the

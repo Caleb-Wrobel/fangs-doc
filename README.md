@@ -46,7 +46,10 @@ flat, trusted LAN.
   - [TLS & reverse proxy](architecture/tls-proxy.md) — the internal PKI and how
     services get a clean `https://` name.
 - **[Build log](log/)** — dated entries on what got built and what fought back.
+  - [2026-06 — Pressure-stall metrics, fleet-wide](log/2026-06-psi-fleetwide.md)
   - [2026-06 — WiFi failover](log/2026-06-wifi-failover.md)
+  - [2026-06 — Centralized logging](log/2026-06-centralized-logging.md)
+  - [2026-06 — Internal CA & reverse proxy](log/2026-06-tls-reverse-proxy.md)
 - **[Roadmap](roadmap.md)** — future state, open questions, things to noodle on.
 
 ## Conventions
@@ -57,3 +60,7 @@ flat, trusted LAN.
 - **Name resolution:** every node carries the full fleet by name; the gateway
   resolves for clients. Internal services answer on `*.fangs.internal`.
 - **Commit messages:** subject lines are 5-7-5 haiku. Yes, really.
+
+The full set — layout, the sanitization rules that keep this repo safe to be
+public, and how a build-log entry is structured — is in
+[CONTRIBUTING](CONTRIBUTING.md).

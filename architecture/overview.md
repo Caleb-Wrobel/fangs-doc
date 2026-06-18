@@ -59,7 +59,7 @@ it's what makes the fleet trustworthy to re-apply at any time.
 
 **Caching and self-sufficiency.** A node on the LAN serves a package cache and an
 internal image registry, so rebuilds don't hammer the internet and the fleet
-keeps working through upstream hiccups.
+keeps working through upstream hiccups. (See [NAS & caching](nas-caching.md).)
 
 ## Build order
 

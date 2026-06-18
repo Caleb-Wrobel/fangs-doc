@@ -42,6 +42,8 @@ flat, trusted LAN.
   principles behind it.
   - [Networking](architecture/networking.md) — gateway, DNS, VPN egress, the
     kill switch.
+  - [NAS & caching](architecture/nas-caching.md) — storage, the package and image
+    caches, and the nightly log backup.
   - [Observability](architecture/observability.md) — metrics and logs.
   - [TLS & reverse proxy](architecture/tls-proxy.md) — the internal PKI and how
     services get a clean `https://` name.

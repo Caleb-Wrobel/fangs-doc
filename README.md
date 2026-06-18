@@ -51,6 +51,8 @@ flat, trusted LAN.
   - [Observability](architecture/observability.md) — metrics and logs.
   - [TLS & reverse proxy](architecture/tls-proxy.md) — the internal PKI and how
     services get a clean `https://` name.
+  - [Onboarding a node](architecture/onboarding.md) — how a freshly-flashed Pi
+    becomes a managed, observable member of the fleet.
 - **[Build log](log/)** — dated entries on what got built and what fought back.
   - [2026-06 — Pressure-stall metrics, fleet-wide](log/2026-06-psi-fleetwide.md)
   - [2026-06 — WiFi failover](log/2026-06-wifi-failover.md)

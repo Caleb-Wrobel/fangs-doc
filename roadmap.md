@@ -51,6 +51,14 @@ network.
   A future milestone is policy routing so *selected* traffic can take the direct
   path — useful for things that misbehave behind a VPN — without weakening the
   fail-closed default.
+- **Profile the two-agent overhead.** Every node runs both node_exporter and Alloy;
+  Alloy could in principle do both jobs, and collapsing to one agent would shed
+  moving parts on the smallest hardware. The fleet keeps them separate for
+  compatibility and isolation (see
+  [Observability](architecture/observability.md#why-node_exporter-and-alloy-stay-separate)),
+  on the *assumption* that carrying both is cheap — but that assumption is
+  unmeasured. Worth profiling the real CPU/memory cost on a 1 GB node before
+  treating it as settled.
 
 ## Done recently
 

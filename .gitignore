@@ -1,0 +1,7 @@
+# MkDocs build output (future milestone — see roadmap.md)
+/site/
+.cache/
+
+# Editor / OS cruft
+*.swp
+.DS_Store

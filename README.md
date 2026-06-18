@@ -9,6 +9,10 @@ The Ansible that actually configures the fleet lives in a separate private repo.
 > no host MACs. Topology is described conceptually (gateway → switch → nodes).
 > If you're looking for the playbooks, they aren't here by design.
 
+> **Reading this as an AI agent?** Start with [context.md](context.md) — it orients
+> you to the repo, the prime sanitization rule, and how to answer from or edit
+> these docs.
+
 ## Why this exists
 
 fangs is a homelab built to *learn the whole stack by owning it* — to replace the

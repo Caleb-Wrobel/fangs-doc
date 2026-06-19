@@ -3,6 +3,11 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Can the local node drive the coding agent too?](2026-06-local-coding-agent.md):
+  pointing a cloud agentic coding CLI at the node's local models. The wiring is native (no
+  shim) and the integration is tidy — but CPU prefill of a large agent prompt is a hard wall
+  (an ~8k-token prompt didn't finish in five minutes). Three surprises, and a clean lesson on
+  matching the workload to the hardware.
 - **2026-06** — [Reaching in from outside](2026-06-remote-access.md): how to use
   internal services (the local AI especially) from a machine off the home LAN.
   The clever shortcut — the VPN's built-in mesh overlay — turned out to be welded to

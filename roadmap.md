@@ -72,6 +72,11 @@ Still on its list:
 
 ## Done recently
 
+- ✅ Tested (and ruled out) running the coding *agent* itself on the node's local models:
+  the integration works natively with no translation layer, but CPU **prefill** of a large
+  agent prompt is the wall — minutes per turn, not viable interactively. Confirmed what the
+  node is for (chat / retrieval / light tasks) and raised the served context window along the
+  way ([log](log/2026-06-local-coding-agent.md)).
 - ✅ Decided the off-LAN access story: ruled out the egress VPN's built-in mesh (it
   force-enables a DHCP-breaking vendor firewall), settled on an SSH tunnel for now with a
   self-hosted WireGuard road-warrior as the durable candidate ([log](log/2026-06-remote-access.md)).

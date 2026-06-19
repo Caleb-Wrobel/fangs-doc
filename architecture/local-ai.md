@@ -22,13 +22,25 @@ pattern as every other service.
 The node has no discrete GPU, so inference is CPU-only. That makes **memory the real
 ceiling, not disk**: a model has to fit in RAM to run at a usable speed. Small models (a
 few billion parameters) are comfortable and reasonably quick; mid-size models run but
-slowly; anything that spills out of memory crawls. Time isn't the constraint here —
-patience is fine — but a model that doesn't fit in RAM is the wall. Disk is *not* the
-scarce resource; the node's card has plenty of room for a generous library.
+slowly; anything that spills out of memory crawls. For ordinary generation, patience is
+fine — but a model that doesn't fit in RAM is the wall. Disk is *not* the scarce
+resource; the node's card has plenty of room for a generous library.
+
+There's a **second wall** that only shows up with large prompts: **prefill**. Before a
+CPU model emits a token it has to process the entire input, and that cost scales with
+prompt size. For bounded prompts it's invisible; for a very large context it becomes
+minutes of latency before the first word. So "slow but fine" holds for short tasks and
+quietly stops holding for large-context *interactive* ones. (The build log entry
+[Can the local node drive the coding agent too?](../log/2026-06-local-coding-agent.md)
+is where this wall got measured.) The practical scope follows from it: local inference
+here earns its keep on **chat, retrieval, and light single-shot tasks** — bounded
+prompts — while large-context agent loops stay on hardware with a real accelerator.
 
 So the model set leans small and spread by purpose rather than "one big model": a general
 chat model, a coding model, a fast lightweight one for quick tasks, and an embedding model
-for retrieval — each pulled once and kept locally.
+for retrieval — each pulled once and kept locally. The served **context window** is raised
+above the engine's small default so longer chats and retrieval prompts aren't silently
+truncated, with RAM as the limit (a larger window grows the per-model memory cost).
 
 ## Running the front-end
 

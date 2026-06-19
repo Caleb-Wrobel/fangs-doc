@@ -35,8 +35,12 @@ Still on its list:
   cluster already collects and ask it questions in plain language. The embedding model is in
   place; this is the next build, and the reason the homelab is a good fit: it generates
   exactly the kind of private, messy, domain-specific data a local model is good at.
-- **Reach it from the open internet without a WAN port** — an outbound overlay network so the
-  laptop can use it from anywhere, not just the upstream LAN (see *things to noodle on*).
+- **Reach it from the open internet without a WAN port** — an overlay so the laptop can use
+  it from anywhere, not just the upstream LAN. The obvious shortcut (the egress VPN's built-in
+  mesh) is **ruled out** — it force-enables a vendor firewall that breaks LAN DHCP (see the
+  [remote-access log](log/2026-06-remote-access.md)). Off-LAN access is an SSH tunnel through
+  the gateway for now; the durable candidate is a **self-hosted WireGuard road-warrior**, whose
+  one trade-off is the single inbound port the mesh would have avoided.
 - **Authentication on the raw inference API** — the chat UI has its own login; the API itself
   is currently open on the trusted LAN.
 
@@ -68,6 +72,9 @@ Still on its list:
 
 ## Done recently
 
+- ✅ Decided the off-LAN access story: ruled out the egress VPN's built-in mesh (it
+  force-enables a DHCP-breaking vendor firewall), settled on an SSH tunnel for now with a
+  self-hosted WireGuard road-warrior as the durable candidate ([log](log/2026-06-remote-access.md)).
 - ✅ Local AI inference on the free-agent node: small LLMs (general / coding / fast /
   embeddings) with a browser chat front-end, fronted by the proxy and reachable from the
   laptop over an SSH tunnel ([log](log/2026-06-local-ai.md)).

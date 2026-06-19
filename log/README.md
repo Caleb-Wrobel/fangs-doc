@@ -3,6 +3,11 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Reaching in from outside](2026-06-remote-access.md): how to use
+  internal services (the local AI especially) from a machine off the home LAN.
+  The clever shortcut — the VPN's built-in mesh overlay — turned out to be welded to
+  a vendor firewall that silently eats LAN DHCP, and a read-back assertion caught it
+  before it shipped. The mesh stays off for two reasons now, not one.
 - **2026-06** — [The free agent gets a job: local LLM inference](2026-06-local-ai.md):
   small models served on-device with a chat UI, so lighter AI tasks stay off the cloud.
   Three lessons on the way — memory (not disk) is the model ceiling, a magic variable that

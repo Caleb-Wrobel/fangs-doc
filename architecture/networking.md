@@ -69,3 +69,29 @@ config to maintain.
 A nice consequence: WiFi failover can keep a node's IP across a wired→wireless
 flip by reserving the *same* address against **both** the wired and wireless MACs.
 (More in the [WiFi failover build log](../log/2026-06-wifi-failover.md).)
+
+## Remote access from off-LAN
+
+The gateway is the only WAN-facing surface, and internal services are never
+published there — the reverse proxy listens on the LAN side only. So reaching a
+service from a machine that isn't on the home LAN means **tunnelling through the
+gateway**, not exposing the service. Today that's an SSH tunnel: one authenticated
+path in, no new inbound port, and the internal `*.fangs.internal` names keep working
+because DNS resolution rides the tunnel back to the gateway's resolver.
+
+A standing temptation is the commercial VPN's **built-in mesh overlay** — it would
+need no inbound port and reuses a vendor already trusted for egress. It stays
+**off**, for two reasons. First, *footprint*: it adds an inbound mesh surface on the
+gateway and enrols the edge in the vendor's coordination plane, when the edge's
+whole job is to be minimal. Second, and decisively, enabling the mesh
+**force-enables the vendor client's own firewall** — the very toggle that silently
+drops LAN DHCP (above) — and won't let that firewall be turned back off while the
+mesh is active. That would hand DHCP-safety to a vendor knob and re-import a second
+filtering policy from outside, violating the principle that the firewall owns the
+policy in one place. (The full story is in the
+[remote-access build log](../log/2026-06-remote-access.md).)
+
+If "logically on the LAN from anywhere" ever justifies a real build, the path is a
+**self-hosted WireGuard road-warrior** on the gateway — the vendor firewall stays
+off and the kill-switch-in-the-firewall model stays intact, at the cost of the one
+inbound port the mesh would have avoided. That trade-off is the open question.

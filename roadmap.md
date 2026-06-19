@@ -22,19 +22,23 @@ the ideas worth chewing on while away from the keyboard.
 
 ## The free-agent node
 
-The fourth node (a 16 GB Pi 5) is now a fully onboarded, observable member of the
-fleet — it carries the baseline and nothing else
-([onboarding log](log/2026-06-auxin-onboarding.md)). Its *role* is what stays
-deliberately uncommitted; the current leaning is **local AI/ML**:
+The fourth node (a 16 GB Pi 5) has its role now: **local AI inference** (see
+[Local AI](architecture/local-ai.md) and the [build log](log/2026-06-local-ai.md)). It
+serves small language models on-device — a general chat model, a coding model, a fast
+lightweight one, and an embedding model — behind the gateway's proxy, with a browser chat
+front-end, reachable from the laptop over an SSH tunnel. Lighter AI tasks now run in-house
+instead of on a cloud API.
 
-- a local LLM runtime + a simple chat UI,
-- an embedding server,
-- **RAG over the fleet's own telemetry** — point a local model at the metrics and
-  logs the cluster already collects and ask it questions in plain language.
+Still on its list:
 
-The appeal is that the homelab generates exactly the kind of private, messy,
-domain-specific data that a local RAG setup is good at, and nothing leaves the
-network.
+- **RAG over the fleet's own telemetry** — point a local model at the metrics and logs the
+  cluster already collects and ask it questions in plain language. The embedding model is in
+  place; this is the next build, and the reason the homelab is a good fit: it generates
+  exactly the kind of private, messy, domain-specific data a local model is good at.
+- **Reach it from the open internet without a WAN port** — an outbound overlay network so the
+  laptop can use it from anywhere, not just the upstream LAN (see *things to noodle on*).
+- **Authentication on the raw inference API** — the chat UI has its own login; the API itself
+  is currently open on the trusted LAN.
 
 ## Things to actually noodle on
 
@@ -64,6 +68,9 @@ network.
 
 ## Done recently
 
+- ✅ Local AI inference on the free-agent node: small LLMs (general / coding / fast /
+  embeddings) with a browser chat front-end, fronted by the proxy and reachable from the
+  laptop over an SSH tunnel ([log](log/2026-06-local-ai.md)).
 - ✅ Onboarded the free-agent node as a managed, observable fleet member — and shook
   out three latent infra bugs on the way ([log](log/2026-06-auxin-onboarding.md)).
 - ✅ WiFi failover, fleet-wide and physically verified

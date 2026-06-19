@@ -3,6 +3,11 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [The free agent gets a job: local LLM inference](2026-06-local-ai.md):
+  small models served on-device with a chat UI, so lighter AI tasks stay off the cloud.
+  Three lessons on the way — memory (not disk) is the model ceiling, a magic variable that
+  vanished in a privilege-escalation context, and a browser that won't trust what the system
+  trusts.
 - **2026-06** — [Onboarding the free agent](2026-06-auxin-onboarding.md): bringing
   the fourth node in was trivial (membership is one inherited baseline) — but a fresh
   node exercising old infrastructure flushed out three latent bugs: a package cache

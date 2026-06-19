@@ -35,7 +35,7 @@ the pieces fit, what broke on the way, and what I'm thinking about building next
 | `limen` | Pi 5 (4 GB)    | Gateway       | Routing / NAT / firewall, VPN egress, recursive DNS, IDS/IPS, log aggregation |
 | `cream` | Pi 3B+         | NAS / caching | Network storage, package cache, image registry, nightly log backups |
 | `skoll` | Pi 3B          | Observability | Metrics (Prometheus), dashboards (Grafana kiosk on a 7″ touchscreen) |
-| `auxin` | Pi 5 (16 GB)   | Free agent    | TBD — earmarked for local AI/ML |
+| `auxin` | Pi 5 (16 GB)   | Local AI      | LLM inference (Ollama) + chat front-end (Open WebUI), embeddings |
 
 `limen` is the only node on the WAN edge; everything else sits behind it on a
 flat, trusted LAN.
@@ -53,7 +53,10 @@ flat, trusted LAN.
     services get a clean `https://` name.
   - [Onboarding a node](architecture/onboarding.md) — how a freshly-flashed Pi
     becomes a managed, observable member of the fleet.
+  - [Local AI inference](architecture/local-ai.md) — small LLMs served on-device,
+    with a chat UI, so lighter AI tasks stay off the cloud.
 - **[Build log](log/)** — dated entries on what got built and what fought back.
+  - [2026-06 — The free agent gets a job: local LLM inference](log/2026-06-local-ai.md)
   - [2026-06 — Onboarding the free agent](log/2026-06-auxin-onboarding.md)
   - [2026-06 — Pressure-stall metrics, fleet-wide](log/2026-06-psi-fleetwide.md)
   - [2026-06 — WiFi failover](log/2026-06-wifi-failover.md)

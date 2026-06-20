@@ -1,0 +1,57 @@
+site_name: fangs-doc
+site_description: Public build log & architecture for the fangs homelab
+site_url: https://caleb-wrobel.github.io/fangs-doc/
+repo_url: https://github.com/Caleb-Wrobel/fangs-doc
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.annotate
+    - toc.integrate
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+  - git-authors
+nav:
+  - Home: index.md
+  - Context: context.md
+  - Roadmap: roadmap.md
+  - Contributing: CONTRIBUTING.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - Networking: architecture/networking.md
+      - NAS/Caching: architecture/nas-caching.md
+      - Observability: architecture/observability.md
+      - Local AI: architecture/local-ai.md
+      - Onboarding: architecture/onboarding.md
+      - TLS Proxy: architecture/tls-proxy.md
+  - Build Log:
+      - Index: log/README.md
+      - Discord Alerting: log/2026-06-alerting-discord.md
+      - Auxin Onboarding: log/2026-06-auxin-onboarding.md
+      - Centralized Logging: log/2026-06-centralized-logging.md
+      - Local AI: log/2026-06-local-ai.md
+      - Local Coding Agent: log/2026-06-local-coding-agent.md
+      - Local Web Search: log/2026-06-local-web-search.md
+      - PSI Fleetwide: log/2026-06-psi-fleetwide.md
+      - Remote Access: log/2026-06-remote-access.md
+      - TLS Reverse Proxy: log/2026-06-tls-reverse-proxy.md
+      - Wi-Fi Failover: log/2026-06-wifi-failover.md

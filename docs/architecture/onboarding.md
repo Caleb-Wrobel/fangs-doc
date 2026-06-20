@@ -2,7 +2,7 @@
 
 How a freshly-flashed Raspberry Pi becomes a managed member of the fleet. This is the
 steady-state procedure; the war story of the first node brought in this way lives in
-the [build log](../log/).
+the [build log](../log/README.md).
 
 The fleet sits behind the gateway on a flat, trusted LAN, and the machine that runs
 Ansible is deliberately *not* on that LAN — so every node is reached by jumping through

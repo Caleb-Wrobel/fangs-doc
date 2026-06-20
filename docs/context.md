@@ -45,9 +45,9 @@ credential, stop: it almost certainly does not belong here.
 
 ## Repo map
 
-Start at [README.md](README.md) for the human framing. Then:
+Start at the [home page](index.md) for the human framing. Then:
 
-- **[architecture/](architecture/)** — the *steady state*: what the system is and
+- **[architecture/](architecture/overview.md)** — the *steady state*: what the system is and
   the principles behind it. Present tense, undated. Read these to answer "how does
   fangs work / why is it built this way."
   - [overview.md](architecture/overview.md) — the whole system, the design
@@ -60,7 +60,7 @@ Start at [README.md](README.md) for the human framing. Then:
     logs (Alloy → Loki).
   - [tls-proxy.md](architecture/tls-proxy.md) — the internal CA (mkcert) and the
     one reverse proxy that gives services a clean `https://name.fangs.internal`.
-- **[log/](log/)** — *dated* build entries, newest first. Each is a "what got
+- **[log/](log/README.md)** — *dated* build entries, newest first. Each is a "what got
   built / what fought back / what I'd tell past me" narrative. Read these to answer
   "what went wrong / why was it done this way / what was learned." Start at
   [log/README.md](log/README.md).

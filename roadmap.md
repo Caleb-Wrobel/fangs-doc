@@ -72,6 +72,10 @@ Still on its list:
 
 ## Done recently
 
+- ✅ Fleet alerting that comes to you: Grafana-managed alerts for node heat (before it
+  throttles) and a node going dark, delivered as push to a phone via a chat-channel
+  webhook — no mail server, outbound-only, nothing new on the WAN
+  ([log](log/2026-06-alerting-discord.md)).
 - ✅ Tested (and ruled out) running the coding *agent* itself on the node's local models:
   the integration works natively with no translation layer, but CPU **prefill** of a large
   agent prompt is the wall — minutes per turn, not viable interactively. Confirmed what the

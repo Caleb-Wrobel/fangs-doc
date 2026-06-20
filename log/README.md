@@ -3,6 +3,11 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Alerts that come find you](2026-06-alerting-discord.md): real fleet
+  alerting — node heat (before it throttles) and a node going dark — pushed to a phone via
+  a chat-channel webhook, no mail server and nothing new on the WAN. Lessons: keep alerts
+  at the data-source layer so they survive a change in collection, don't page on *absence*
+  the way you page on *badness*, and treat a webhook URL as the bearer secret it is.
 - **2026-06** — [A web search bolt-on, and the local-agentic question answered](2026-06-local-web-search.md):
   giving the local chat a web-search capability — a self-hosted metasearch that CAPTCHA-blocked
   under any load (and *not* because of the VPN — checked), then a keyed API whose free tier had

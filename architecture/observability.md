@@ -19,6 +19,13 @@ how much real work is being delayed waiting on CPU, memory, or IO. It's a better
 and getting it consistent across the fleet meant making sure every node had it
 enabled and had rebooted into it.
 
+### Thermals
+
+node_exporter also exposes each node's **SoC temperature**, charted on a fleet
+thermals dashboard. On small-board computers with modest cooling, a creeping
+temperature is an early sign of a failing fan or blocked airflow — so it's both a
+panel and the basis for a heat [alert](#alerting).
+
 ## Logs
 
 - **Grafana Alloy** runs on every node, reads the systemd journal, and ships it to
@@ -40,6 +47,53 @@ directory that a reboot wipes — so "a week of retention" was really "until the
 next reboot." Pointing it at persistent storage (and configuring the deletion
 store that retention actually needs) fixed it. The takeaway: verify persistence
 empirically, don't assume a default is durable.
+
+## Alerting
+
+Dashboards tell you something's wrong *if you happen to be looking*. Alerts come
+find you. The fleet's alerts are **Grafana-managed** — defined as code, evaluated by
+Grafana itself, and delivered to a phone.
+
+**Why Grafana-managed, rather than the metrics system's own alerting.** The
+alternative is to write alert rules down in Prometheus and route them through a
+separate notifier. The fleet keeps alerting *in Grafana* on purpose: a Grafana alert
+targets a **data source**, not a particular collector. If the way metrics are
+gathered ever changes underneath it, the alert keeps working — you repoint the data
+source and the rule is untouched. It also keeps the graph and the alert built on it
+in one place.
+
+**What fires today:**
+
+- **Heat.** Each node's SoC temperature, alerting on a sustained climb *before* the
+  hardware would start throttling — early warning for a failing fan or blocked
+  airflow, not a post-mortem.
+- **A node going dark.** If a host stops being scraped for long enough, that's an
+  outage. This rule was motivated by a real incident: a node dropped off and
+  *nothing said so* — the monitoring fleet couldn't report its own member missing.
+  It's deliberately **slow to fire** (a sustained outage, not a blip), because one
+  node rides a flaky wireless link and a brief drop there isn't worth a 3 a.m. ping.
+
+**A subtlety worth stating: don't alert on *absence* the way you alert on *badness*.**
+A node that's genuinely down still reports a clear "I'm down" reading the rule can
+see. "No data at all" is a *different* condition — the collector is gone, or the
+target never existed — and treating missing data as an automatic page means a
+flapping link spams you. The down-rule treats missing data as "fine," because a true
+outage shows up as data, not as silence.
+
+## Delivery: push, not pull
+
+Alerts go to a **chat-channel webhook** — a private channel that pings a phone. Three
+things make this a good fit for a home fleet:
+
+- **No mail server.** A webhook is a single outbound HTTPS request to a URL: no SMTP,
+  no deliverability tuning, nothing extra to host.
+- **Outbound only.** The notification leaves a node, rides the gateway's VPN egress,
+  and reaches the chat service over HTTPS. Nothing new is published on the WAN — the
+  same fail-closed posture as the rest of the fleet.
+- **The webhook URL is a secret.** Anyone holding it can post to the channel, so it
+  lives encrypted in the vault, is written to disk with restrictive permissions, and
+  is kept out of logs. It's a *bearer* credential — treat it like a password, and
+  rotate it if it's ever exposed.
 
 ## Why node_exporter and Alloy stay separate
 

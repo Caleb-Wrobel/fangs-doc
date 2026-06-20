@@ -36,6 +36,15 @@ is where this wall got measured.) The practical scope follows from it: local inf
 here earns its keep on **chat, retrieval, and light single-shot tasks** — bounded
 prompts — while large-context agent loops stay on hardware with a real accelerator.
 
+This is now a settled conclusion rather than a hunch: two independent attempts — driving a
+coding agent, and grounding a web search — hit the **same** prefill wall from different
+directions ([the web-search entry](../log/2026-06-local-web-search.md) tells that second
+story). So the division of labor is deliberate: **the heavy, agentic work lives on the cloud
+model API; the local node is the in-house, private, bounded-task layer.** The chat UI does
+carry an optional **web-search bolt-on** (a keyed search API, spend-capped at its free
+credit) — handy for a current-events question, but a convenience rather than load-bearing,
+and grounding it *well* waits on hardware that can afford the larger prompt.
+
 So the model set leans small and spread by purpose rather than "one big model": a general
 chat model, a coding model, a fast lightweight one for quick tasks, and an embedding model
 for retrieval — each pulled once and kept locally. The served **context window** is raised

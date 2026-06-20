@@ -3,6 +3,12 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [A web search bolt-on, and the local-agentic question answered](2026-06-local-web-search.md):
+  giving the local chat a web-search capability — a self-hosted metasearch that CAPTCHA-blocked
+  under any load (and *not* because of the VPN — checked), then a keyed API whose free tier had
+  quietly gone metered since I last knew it. Search fires, but grounding hits the same CPU-prefill
+  wall as the coding agent. Two failures from two directions settle it: the local node isn't an
+  agent runtime on this hardware — and that's fine, it was never the job.
 - **2026-06** — [Can the local node drive the coding agent too?](2026-06-local-coding-agent.md):
   pointing a cloud agentic coding CLI at the node's local models. The wiring is native (no
   shim) and the integration is tidy — but CPU prefill of a large agent prompt is a hard wall

@@ -3,6 +3,13 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Durable storage: enclosure-or-drive debug (parked)](2026-06-storage-enclosure-debug.md):
+  a new NVMe SSD won't enumerate through its USB enclosure — bridge appears, drive reads as
+  zero bytes. Carrying the *same* enclosure to a second host gave the identical result, which
+  eliminated the entire host as a variable in one replug. Drive-type mismatch ruled out too;
+  what's left (bad cable / dead drive / dead enclosure) needs a spare part that isn't on hand,
+  so it's shelved. The keeper is the method: host before part, one variable at a time, don't
+  buy a theory you can't test.
 - **2026-06** — [Alerts that come find you](2026-06-alerting-discord.md): real fleet
   alerting — node heat (before it throttles) and a node going dark — pushed to a phone via
   a chat-channel webhook, no mail server and nothing new on the WAN. Lessons: keep alerts

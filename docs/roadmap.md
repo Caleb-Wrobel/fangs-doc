@@ -19,6 +19,12 @@ the ideas worth chewing on while away from the keyboard.
 - **Canonical per-node imager config.** One reproducible image definition per node
   type, so any node can be reflashed to an identical starting point without
   hand-tuning.
+- **Durable NVMe storage.** The fleet wants real SSD storage rather than leaning on
+  SD cards and a single external HDD. First checkout of a candidate drive stalled on
+  an undiagnosed enclosure-or-drive fault (**parked** — see the
+  [storage debug log](log/2026-06-storage-enclosure-debug.md)); resumes once a
+  known-good spare exists to run the deciding cross-test, and a permanent mount point
+  is chosen.
 
 ## The free-agent node
 

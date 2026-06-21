@@ -53,5 +53,6 @@ nav:
       - Local Web Search: log/2026-06-local-web-search.md
       - PSI Fleetwide: log/2026-06-psi-fleetwide.md
       - Remote Access: log/2026-06-remote-access.md
+      - Storage Enclosure Debug: log/2026-06-storage-enclosure-debug.md
       - TLS Reverse Proxy: log/2026-06-tls-reverse-proxy.md
       - Wi-Fi Failover: log/2026-06-wifi-failover.md

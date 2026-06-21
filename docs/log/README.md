@@ -3,6 +3,13 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Building features in stages](2026-06-feature-workflow.md): formalizing a
+  repeatable feature pipeline — why → what → how → proof → build → validate → land, with a
+  small written digest handed between stages — and proving it by shipping a dashboard refresh
+  (nodes shown by name, not address). The pipeline's worth showed up in what it caught early: a
+  confident plan that was wrong about the present, a community dashboard that wasn't what its
+  number promised, two cosmetic go-back-one-step loops, and a fresh-context helper that returned
+  confident wrong answers — caught only because its verdict got re-checked.
 - **2026-06** — [Durable storage: enclosure-or-drive debug (parked)](2026-06-storage-enclosure-debug.md):
   a new NVMe SSD won't enumerate through its USB enclosure — bridge appears, drive reads as
   zero bytes. Carrying the *same* enclosure to a second host gave the identical result, which

@@ -78,6 +78,18 @@ Still on its list:
 
 ## Done recently
 
+- ✅ A daily fleet report that comes to you: a morning digest of 24h uptime, outages, heat
+  peaks, memory pressure, and error volume, posted to its **own** chat channel — separate from
+  real-time alerting so a bulky summary never competes with a page
+  ([log](log/2026-06-daily-report.md)).
+- ✅ The fleet dashboard as a managed kiosk: the display node, reflashed to the lean OS, now
+  drives the 7″ wall display as a resilient, observable **systemd service** that reaches the
+  dashboards over the proxy with **anonymous read-only** access — no hand-opened browser, no
+  login wall ([log](log/2026-06-kiosk.md)).
+- ✅ Re-onboarded the reflashed display node as a managed member — and shook out three latent
+  fleet bugs on the way (a package-cache proxy serving error pages the new OS read as "tampered"
+  indexes, a failover role that cut its own link, and the clockless-boot landmine)
+  ([log](log/2026-06-reflash-onboarding.md)).
 - ✅ Fleet alerting that comes to you: Grafana-managed alerts for node heat (before it
   throttles) and a node going dark, delivered as push to a phone via a chat-channel
   webhook — no mail server, outbound-only, nothing new on the WAN

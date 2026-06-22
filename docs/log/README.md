@@ -3,14 +3,27 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [A daily report that comes to you](2026-06-daily-report.md): a morning
+  retrospective digest — 24h uptime, outages, heat peaks, memory stalls, error volume — posted to
+  its **own** chat channel (separate from real-time alerting, so a bulky summary never buries a
+  page). It earned its keep on day one, flagging the display node peaking ~74 °C under the new
+  kiosk. The fight: the chat service's CDN 403'd the script's default HTTP User-Agent — `curl`
+  worked, so it was a header, not a credential. This is the baseline a future telemetry-RAG unit
+  will learn "normal" from.
+- **2026-06** — [Re-onboarding a reflashed node](2026-06-reflash-onboarding.md): wiping the
+  display node to the lean OS was routine for the *node* — three pieces of the fleet around it bit
+  instead. A package-cache proxy with an empty upstream served error pages the new OS read as
+  "signature manipulated"; the WiFi-failover role cut its own connection when run over WiFi (now
+  guarded); and the clockless boards needed a "is the clock synced?" onboarding check. Keeper: a
+  "new node" failure is usually the fleet around it, and you rule out the dramatic explanation last.
 - **2026-06** — [The kiosk, as a real service](2026-06-kiosk.md): rebuilding the little
   touchscreen dashboard as a managed **systemd service** on the now-lite display node —
   restart-on-crash, logs to the central store, start-after-network, and its own up/down alert —
   instead of a hand-opened browser. Chose the service over an autologin shell (more seat/session
   plumbing, but resilient + observable; on-box debug buys nothing on a node that's useless
-  offline). Two snags from the *real screen*: the dashboard greets the kiosk with a login page
-  (needs an anonymous read-only view), and the browser's scale knob shrank the whole window
-  instead of densifying the content.
+  offline). The login wall is solved (anonymous read-only access, plus a full-URL fix so kiosk
+  mode survives the slug redirect); the small-screen scale lever — which shrank the whole window
+  instead of densifying content — is still parked.
 - **2026-06** — [Moving the watchtower](2026-06-observability-relocation.md): relocating the
   observability stack (metrics DB + dashboards) off the strained 1 GB node onto the always-on
   gateway, built portable (assigned by inventory group, endpoints via stable proxy names) so it can

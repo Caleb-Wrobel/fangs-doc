@@ -7,9 +7,11 @@ happened, in words). Both are fleet-wide and both land somewhere durable.
 
 - **node_exporter** runs on every node, exposing host metrics (CPU, memory, disk,
   network, and pressure-stall information).
-- **Prometheus** runs on the observability node and scrapes all four hosts.
-- **Grafana** renders it, and runs as a **kiosk on a 7″ touchscreen** wired to the
-  observability node — a literal always-on wall display for the fleet.
+- **Prometheus** runs on the **gateway** — the observability host, co-located with the
+  logs and the reverse proxy — and scrapes all four nodes.
+- **Grafana** renders it, also on the gateway.
+- A separate **lean kiosk node** drives a **7″ touchscreen** as an always-on wall display,
+  reaching Grafana over the proxy rather than running it locally (see [The kiosk](#the-kiosk)).
 
 ### Pressure Stall Information
 
@@ -72,6 +74,9 @@ in one place.
   *nothing said so* — the monitoring fleet couldn't report its own member missing.
   It's deliberately **slow to fire** (a sustained outage, not a blip), because one
   node rides a flaky wireless link and a brief drop there isn't worth a 3 a.m. ping.
+- **The kiosk gone dark.** If the wall-display service dies while its host is still up — a
+  crashed or failed kiosk — that's caught too. The host is fine, so the node-down rule
+  wouldn't notice; a unit-scoped check does.
 
 **A subtlety worth stating: don't alert on *absence* the way you alert on *badness*.**
 A node that's genuinely down still reports a clear "I'm down" reading the rule can
@@ -134,5 +139,33 @@ and the day it stops being cheap is a measurement question left open on the
 Grafana isn't exposed on its raw host:port. It's fronted by the
 [reverse proxy](tls-proxy.md): from anywhere on the LAN you browse
 `https://grafana.fangs.internal`, the gateway terminates TLS with the internal CA
-and proxies to Grafana, with Grafana's own auth still in front. Clean padlock, no
-port numbers to remember.
+and proxies to Grafana. On the trusted LAN, Grafana serves a **read-only anonymous view** (so
+the unattended kiosk — and any quick glance from a browser — needs no login), while full
+admin sits behind its own auth. Clean padlock, no port numbers to remember.
+
+## The kiosk
+
+The display node — a small, passively-cooled board running the **lean OS** — drives a 7″
+touchscreen showing the fleet-overview board. It's a **managed service**, not a hand-opened
+browser: a minimal Wayland compositor launches a single fullscreen browser as a systemd unit
+that **restarts on crash**, **waits for the network** before opening (so a cold boot doesn't
+flash a connection error), and **logs to the journal** — and onward to the log store — like
+everything else. The browser trusts the internal CA through its *own* certificate store, and
+the anonymous read-only view above means there's no login wall for an unattended screen.
+
+Its health is itself observed: a unit-scoped metric reports whether the kiosk service is
+alive, and the [alert](#alerting) above fires if the box is up but the display is dead — the
+one failure the node-down rule can't see.
+
+## Daily report
+
+Alongside real-time alerting, a **daily report** lands each morning in its own chat channel: a
+terse, retrospective digest of the last 24 hours — per-node availability, up/down transitions,
+peak temperature, memory-stall time, error-log volume, and service churn, with a line calling
+out anything past threshold. A timer on the gateway queries Prometheus and Loki and posts the
+summary.
+
+It's deliberately **separate from alerting**: alerts are real-time and urgent and get their
+own webhook; the report is retrospective and bulky and gets another, so a chatty summary can
+never bury a page. It's also the **baseline** for a future "is anything *unusually* off?"
+experiment — you can't recognize abnormal until you've written down normal.

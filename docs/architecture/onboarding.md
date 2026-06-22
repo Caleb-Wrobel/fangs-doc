@@ -29,8 +29,9 @@ worth not opening.
 
 ## The path a node walks
 
-1. **Flash** the OS image — the lean headless build, or the desktop build for the
-   kiosk node — and seed the hostname and the fleet's SSH public key at flash time.
+1. **Flash** the OS image — the lean headless build (every node, the kiosk included; the
+   kiosk draws its screen from a minimal compositor, not a full desktop) — and seed the
+   hostname and the fleet's SSH public key at flash time.
 2. **First boot** brings the node up on a dynamic-pool lease. That's expected; it gets
    pinned next.
 3. **Identify the node's hardware address** from the gateway. No login is needed: the
@@ -65,7 +66,7 @@ when it has one — so a node whose role is still undecided is already a complet
 observable member carrying nothing but the baseline, which is a perfectly good place
 for it to sit.
 
-## Two things that would bite, and why they don't here
+## Three things that would bite, and why they don't here
 
 **Reflash keeps the address.** Because the reservation is keyed to the NIC's hardware
 address and that survives reflashing, a wiped-and-rebuilt node returns on the same
@@ -81,3 +82,11 @@ was the casualty that made this rule explicit: first-boot provisioning was rewri
 the hosts file on every reboot.) A reflash starts fresh and provisions again; the next
 automation run stands it down again. First boot provisions; everything after belongs to
 config management.
+
+**A clockless board can fail its own first run.** These boards have no battery-backed clock,
+so a freshly flashed node boots believing it's some default past date until it reaches a time
+server — and a wrong clock silently fails anything that checks a validity window: package
+signatures, and TLS against the internal CA. So "confirm the clock is synced before the first
+real run" is a written step. It usually syncs within seconds of boot; when it hasn't, a
+skewed clock is the unglamorous explanation for an otherwise baffling signature or
+certificate failure.

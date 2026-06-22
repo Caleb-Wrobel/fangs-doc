@@ -41,10 +41,12 @@ nav:
       - NAS/Caching: architecture/nas-caching.md
       - Observability: architecture/observability.md
       - Local AI: architecture/local-ai.md
+      - Data Layer: architecture/data-layer.md
       - Onboarding: architecture/onboarding.md
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - The Data Layer: log/2026-06-postgres-data-layer.md
       - Daily Report: log/2026-06-daily-report.md
       - Re-onboarding a Node: log/2026-06-reflash-onboarding.md
       - The Kiosk Service: log/2026-06-kiosk.md

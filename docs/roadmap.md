@@ -38,9 +38,10 @@ instead of on a cloud API.
 Still on its list:
 
 - **RAG over the fleet's own telemetry** — point a local model at the metrics and logs the
-  cluster already collects and ask it questions in plain language. The embedding model is in
-  place; this is the next build, and the reason the homelab is a good fit: it generates
-  exactly the kind of private, messy, domain-specific data a local model is good at.
+  cluster already collects and ask it questions in plain language. The embedding model and now
+  a pgvector store ([data layer](architecture/data-layer.md)) are both in place; this is the
+  next build, and the reason the homelab is a good fit: it generates exactly the kind of
+  private, messy, domain-specific data a local model is good at.
 - **Reach it from the open internet without a WAN port** — an overlay so the laptop can use
   it from anywhere, not just the upstream LAN. The obvious shortcut (the egress VPN's built-in
   mesh) is **ruled out** — it force-enables a vendor firewall that breaks LAN DHCP (see the
@@ -78,6 +79,10 @@ Still on its list:
 
 ## Done recently
 
+- ✅ A structured-data layer: Postgres + pgvector on the 16 GB node (rootless container, a
+  named volume, and a nightly `pg_dump` pulled to the NAS), built infrastructure-first with the
+  schema deferred to its first consumer ([log](log/2026-06-postgres-data-layer.md),
+  [architecture](architecture/data-layer.md)).
 - ✅ A daily fleet report that comes to you: a morning digest of 24h uptime, outages, heat
   peaks, memory pressure, and error volume, posted to its **own** chat channel — separate from
   real-time alerting so a bulky summary never competes with a page

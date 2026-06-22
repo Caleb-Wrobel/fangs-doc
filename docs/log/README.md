@@ -3,6 +3,12 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [A database for the fleet](2026-06-postgres-data-layer.md): standing up a
+  Postgres + pgvector data layer on the 16 GB node — rootless Podman, a named volume (to dodge
+  the rootless permission fight), the official multi-arch pgvector image, a read-only backup
+  role, and a nightly `pg_dump` *pulled* by the NAS. Built deliberately empty: the schema waits
+  for the first consumer so it's shaped by a real need, not a guess. The microSD risk is owned,
+  not avoided — Postgres holds only derived data, and the nightly dump bounds loss to a day.
 - **2026-06** — [A daily report that comes to you](2026-06-daily-report.md): a morning
   retrospective digest — 24h uptime, outages, heat peaks, memory stalls, error volume — posted to
   its **own** chat channel (separate from real-time alerting, so a bulky summary never buries a

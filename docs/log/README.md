@@ -3,6 +3,14 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Moving the watchtower](2026-06-observability-relocation.md): relocating the
+  observability stack (metrics DB + dashboards) off the strained 1 GB node onto the always-on
+  gateway, built portable (assigned by inventory group, endpoints via stable proxy names) so it can
+  move again with a one-line change. The detours carried the lessons: I blamed the kiosk browser but
+  a baseline showed the *dashboard server* was the real RAM hog; "roomiest host" lost to "most
+  reliable host" because the alerter inherits its host's uptime; the perishable before-state had to
+  be captured before the move erased it; and a dry-run "failure" was just check-mode's install-then-
+  start blind spot.
 - **2026-06** — [Building features in stages](2026-06-feature-workflow.md): formalizing a
   repeatable feature pipeline — why → what → how → proof → build → validate → land, with a
   small written digest handed between stages — and proving it by shipping a dashboard refresh

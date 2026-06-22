@@ -3,6 +3,14 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [The kiosk, as a real service](2026-06-kiosk.md): rebuilding the little
+  touchscreen dashboard as a managed **systemd service** on the now-lite display node —
+  restart-on-crash, logs to the central store, start-after-network, and its own up/down alert —
+  instead of a hand-opened browser. Chose the service over an autologin shell (more seat/session
+  plumbing, but resilient + observable; on-box debug buys nothing on a node that's useless
+  offline). Two snags from the *real screen*: the dashboard greets the kiosk with a login page
+  (needs an anonymous read-only view), and the browser's scale knob shrank the whole window
+  instead of densifying the content.
 - **2026-06** — [Moving the watchtower](2026-06-observability-relocation.md): relocating the
   observability stack (metrics DB + dashboards) off the strained 1 GB node onto the always-on
   gateway, built portable (assigned by inventory group, endpoints via stable proxy names) so it can

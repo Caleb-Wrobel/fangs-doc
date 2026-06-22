@@ -45,6 +45,7 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - The Kiosk Service: log/2026-06-kiosk.md
       - Discord Alerting: log/2026-06-alerting-discord.md
       - Auxin Onboarding: log/2026-06-auxin-onboarding.md
       - Centralized Logging: log/2026-06-centralized-logging.md

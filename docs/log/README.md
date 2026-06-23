@@ -3,14 +3,17 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
-- **2026-06** — [Breaking the fleet on purpose (the access gate)](2026-06-chaos-stack.md): the
-  start of a chaos-engineering harness — inject known, self-reverting faults into the two leaf nodes
-  *only* (the gateway and AI node are never targets) to prove alerts fire and nodes recover, with
-  blind spots ("broke X, nothing paged") as first-class output. This is the fleet's first multi-part
-  *epic*; the first piece is the **access gate**: a locked-down robot identity whose key can run
-  exactly one program (no shell), which validates every request against a root-owned catalog and arms
-  a **victim-local dead-man** so recovery never depends on the controller. It ships **inert** — a
-  complete, idempotent capability that does nothing until a later piece calls it.
+- **2026-06** — [Breaking the fleet on purpose](2026-06-chaos-stack.md): the fleet's first multi-part
+  *epic* — a chaos-engineering harness that injects known, self-reverting faults into the two leaf nodes
+  *only* (the gateway and AI node are never targets) to prove alerts fire and nodes recover, treating
+  blind spots ("broke X, nothing paged") as first-class output. Six pieces, each shipped inert until the
+  next gave it purpose: a locked-down **access gate** (a robot key that can run exactly one program, with
+  a victim-local dead-man); an **incident store** with a vector column; a **controller** that measures the
+  real alert via the dashboard API and recovers; a **stand-down guard** (won't poke an already-hurting
+  fleet) plus dual-sink harness-health (so chaos is distinguishable from real failure); a **retrieval
+  memory** that narrates each incident with an on-device model and answers "has this happened before?"
+  semantically; and a **dashboard**. Ships manual-first. The throughline: build the dangerous capability
+  inert + behind a gate, and treat observability *of the experiment itself* as first-class.
 - **2026-06** — [A database for the fleet](2026-06-postgres-data-layer.md): standing up a
   Postgres + pgvector data layer on the 16 GB node — rootless Podman, a named volume (to dodge
   the rootless permission fight), the official multi-arch pgvector image, a read-only backup

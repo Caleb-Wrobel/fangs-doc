@@ -1,4 +1,4 @@
-# 2026-06 — Breaking the fleet on purpose (the access gate)
+# 2026-06 — Breaking the fleet on purpose
 
 **Goal:** deliberately inject known, self-reverting failures into the fleet — on a schedule and
 on demand — to prove the alerting actually fires and the nodes actually recover, and to turn each
@@ -78,12 +78,59 @@ into its owner's session deliberately, as root, for that one unit.
 > cycle, and read the dead-man timer's countdown through the gate's own `status`. The capability
 > proved itself using only what was already exposed.
 
-## What comes next
+## Giving the door a key: the rest of the harness
 
-The gate opens onto the rest of the epic: a small **incident store** (with a vector column, so the
-data layer finally gets its first *retrieval* consumer), then the **controller** itself — weighted
-selection, a jittered schedule plus on-demand runs, and reading alert state from the **dashboard
-server's API** rather than the metrics store (because the alerts are evaluated at the dashboard
-layer, where the raw "did it fire" series doesn't exist) — then a per-incident **narrative +
-embedding**, and finally a **dashboard** for the whole game. The door is built and bolted; next we
-give something the key.
+With the gate built, the rest of the epic followed as small, independently-shipped pieces — each one
+inert until the next gave it a purpose.
+
+**The incident store.** A dedicated schema with two tables — one row per incident, and a companion
+table with a **vector column** — plus two least-privilege roles: a writer the controller uses, and a
+**read-only reader** scoped to *only* this schema (it structurally cannot see the rest of the
+database). This is the data layer's long-promised first **retrieval** consumer; it shipped empty, on
+purpose, waiting for a writer.
+
+**The controller.** The piece that ties gate and store together: it weights a random pick from the
+catalog, dispatches it over the forced-command path, **measures whether the expected alert actually
+fires by reading the dashboard server's API** (the alerts are evaluated at the dashboard layer, so
+the raw "did it fire" series doesn't exist in the metrics store — you have to ask the right oracle),
+recovers on confirmation or at the time cap, and writes the incident down. First live run: it took a
+node's metrics agent down, watched the "node down" alert climb to *firing* over its ten-minute
+window, recovered, and logged a complete incident. The loop closed.
+
+**Knowing when *not* to act.** A late but important addition: before injecting, the controller now
+**stands down** if the fleet is already unhealthy — a node already down, an alert already firing, or a
+previous experiment still in flight — and it **fails safe** (if it can't *verify* health, it declines
+rather than pile chaos onto an unknown state). It also announces every decision to a dedicated chat
+channel: *injecting*, *standing down (and why)*, *recovered*. That surfaced a second, subtler
+requirement:
+
+> **Chaos is deliberate noise, so it must be distinguishable from real failure.** A chaos-induced
+> outage must never be mistaken for a genuine one — by the morning report, by future analytics, by a
+> human glancing at a graph. So every run also records its outcome to **two places**: a structured log
+> line shipped to the log store (survives even a database outage), and a dedicated harness-health table
+> (`recovered` / `stood-down` / `errored`). Now "is the experiment itself working?" is its own
+> answerable question, separate from "did the fleet break?", and an expected break can be filtered out.
+
+**Memory.** When a run ends cleanly it hands off to a separate pass that finally makes the vector
+column earn its keep: it embeds a summary of the incident, **retrieves the nearest prior incidents**,
+asks a small **on-device model** to write a two-sentence retrospective with that history as context,
+stores it, and posts it to the channel. The "has this happened before?" query works *semantically* —
+asked for incidents like a registry outage, it returned the *other* registry outage ahead of an
+unrelated one. Retrieval-augmented memory over the fleet's own self-inflicted history, running entirely
+on-device.
+
+**The view.** Finally, one board ties it together — reading the store through that read-only reader:
+the incidents (what broke, whether it paged, the written narrative), and the harness-health table
+(stand-downs, errors, last good run). The whole game, legible at a glance.
+
+## How it ships, and what's parked
+
+It ships **manual-first**: the daily schedule is installed but **disabled**, and the one physically-risky
+action (CPU/thermal load on a passively-cooled board) is excluded from automatic selection — both flip on
+with a one-liner once the early runs have been watched by hand. Parked for later: marking chaos windows
+directly on the *fleet-wide* dashboards (so any graph shows "this dip was us"), a real-time "chaos is
+active" signal the alerting layer can read, and a meta-alert for "the experiment hasn't run in a while."
+
+> **The throughline:** build the dangerous capability **inert and behind a gate first**, prove each
+> piece in isolation, and treat *observability of the experiment itself* as a first-class feature — because
+> a tool that breaks things on purpose is only safe if you can always tell its noise from the real thing.

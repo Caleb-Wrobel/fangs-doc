@@ -3,6 +3,14 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-06** — [Breaking the fleet on purpose (the access gate)](2026-06-chaos-stack.md): the
+  start of a chaos-engineering harness — inject known, self-reverting faults into the two leaf nodes
+  *only* (the gateway and AI node are never targets) to prove alerts fire and nodes recover, with
+  blind spots ("broke X, nothing paged") as first-class output. This is the fleet's first multi-part
+  *epic*; the first piece is the **access gate**: a locked-down robot identity whose key can run
+  exactly one program (no shell), which validates every request against a root-owned catalog and arms
+  a **victim-local dead-man** so recovery never depends on the controller. It ships **inert** — a
+  complete, idempotent capability that does nothing until a later piece calls it.
 - **2026-06** — [A database for the fleet](2026-06-postgres-data-layer.md): standing up a
   Postgres + pgvector data layer on the 16 GB node — rootless Podman, a named volume (to dodge
   the rootless permission fight), the official multi-arch pgvector image, a read-only backup

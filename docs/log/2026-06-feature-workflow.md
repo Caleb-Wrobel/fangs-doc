@@ -83,6 +83,27 @@ detailed paper trail lives in the **private** repo alongside the code, where coo
 are fine; the sterile scratchpad gets a one-paragraph summary; the public log — this page —
 gets the *story*. The constraint chose the filing system.
 
+## Going bigger: epics (a later addition)
+
+The pipeline's unit is one feature: one branch, one trip, one merge. The next thing I wanted to
+build was bigger than that — several dependent features sharing one motivation (a whole harness, not
+a single role). The temptation was to stretch the pipeline into one giant branch. Instead I added a
+small idea: an **epic is a *container* of ordinary features, not a bigger feature.**
+
+It needs exactly one new artifact — a **charter** — plus a dependency order. The charter is to the
+epic what the "why" page is to a feature: it states the motivation, the **hard constraints every
+piece must honor**, the cross-cutting decisions (identity, security model), and an **ordered roster
+of named children with live status**. It's merged **first**, so every child can read it. Then each
+child is just a normal feature — its own branch, its own pipeline — that cites the charter and
+**merges to the main line incrementally, in dependency order.** The main line stays releasable;
+branches stay short; a child that's inert until a later one arrives is fine (this fleet builds
+infrastructure-first as a rule).
+
+The neat part is that it's **fractal**: the charter relates to its children exactly the way the
+holistic builder relates to a single feature, and the way the process doc relates to the whole
+project. The convention itself went in the way every process change here does — on its own little
+"how we work" branch, with a version bump — and got its first real exercise immediately.
+
 ## What I'd tell past me
 
 - **Separate "what we want" from "what's true right now," and do the second from the

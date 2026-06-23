@@ -27,7 +27,8 @@ that acceptable:
 
 ## Status
 
-Infrastructure only — there is no schema yet. The data model is deferred to the first
-consumer (the [daily report](../log/2026-06-daily-report.md) persisting its output, or a
-retrieval pipeline needing a vector store), so it gets shaped by a real requirement rather
-than a guess.
+The **first consumer has landed**: the [daily report](../log/2026-06-daily-report.md) now lives on
+this node and persists one structured row per fleet node on every run, so the first table was shaped
+by a real requirement rather than a guess — and through a deliberately **insert-only** writer role,
+distinct from the read-only backup role and the superuser. A retrieval pipeline needing the vector
+store is the remaining anticipated consumer, sitting alongside the node's embedding model.

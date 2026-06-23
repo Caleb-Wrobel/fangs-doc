@@ -44,8 +44,19 @@ of only to chat, or a retrieval pipeline needing a vector store. Designing the s
 against imagined needs, is how you get a schema you fight later. The infrastructure is this
 unit; the data model is the *next* one, and it gets to be shaped by a real requirement.
 
+## The first consumer arrived
+
+The empty room didn't stay empty for long. The **daily report** became the first consumer: it
+relocated onto this node and now persists one structured row per fleet node on every run, so the
+first table was shaped by a *real* requirement rather than a guessed one — exactly the bet this
+build made. The schema-design discipline held up in passing, too: an **insert-only writer role**
+(not the superuser, not the read-everything backup role) was added at deploy time, and because the
+report's job runs as root while this container is rootless, the role/table creation reaches in *as
+the container's owner* while the nightly write comes over a local connection as the restricted role.
+See **"A daily report that comes to you."**
+
 ## What comes next
 
-The first schema appears the moment a consumer does. The vector store now sits alongside the
-embedding model — which makes "retrieval over the fleet's own telemetry" concrete rather than
-aspirational: there's finally somewhere to put the vectors.
+The other consumer is the one this build was really anticipating: the vector store sits alongside the
+embedding model, so "retrieval over the fleet's own telemetry" is concrete rather than aspirational —
+and the daily report is now quietly accumulating the structured "normal" it can learn from.

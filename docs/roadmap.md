@@ -10,12 +10,13 @@ the ideas worth chewing on while away from the keyboard.
   let new services be protected by default instead of each rolling their own.
 - **Registry authentication.** The internal image registry currently runs open on
   the trusted LAN. Add credentials before it carries anything that matters.
-- **Fleet-wide quality pass.** Three threads from recent work:
-  - a documented **dry-run convention** (every role safe to run in check mode),
-  - a fleet-wide **idempotency audit** (every role reports zero changes on
-    re-run — see the [WiFi failover log](log/2026-06-wifi-failover.md) for why
-    this isn't a given),
-  - adopt **`ansible-lint`** as a rung between syntax-check and dry-run.
+- **Document the dry-run convention.** Two of this thread's three parts have landed:
+  **`ansible-lint`** is enforced (a pinned `production` profile plus a pre-commit gate),
+  and the fleet has passed a **zero-changes idempotency baseline** (bar two documented
+  exceptions). What's left is *writing the convention down* — a short doc stating every
+  role must be safe in check mode and re-run to zero changes (see the
+  [WiFi failover log](log/2026-06-wifi-failover.md) for why that isn't a given), as the
+  bar new roles are held to.
 - **Canonical per-node imager config.** One reproducible image definition per node
   type, so any node can be reflashed to an identical starting point without
   hand-tuning.

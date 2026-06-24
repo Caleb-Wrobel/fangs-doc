@@ -104,6 +104,37 @@ holistic builder relates to a single feature, and the way the process doc relate
 project. The convention itself went in the way every process change here does — on its own little
 "how we work" branch, with a version bump — and got its first real exercise immediately.
 
+## Telling "wrong" from "incomplete" (a later addition)
+
+The pipeline already lets the build *amend its plan* when reality bites (Surprise 2). But there's
+a subtler case it didn't name: a step that runs **perfectly** and still produces the **wrong**
+result — because it rested on a belief that didn't hold. The motivating example was the kiosk's
+small-screen legibility. A browser scale knob was chosen to *densify* the cramped dashboard; it
+ran without error and instead shrank the whole window into a letterbox. **Sound execution of an
+unsound premise** — not a side-effect of a good plan, but a good plan built on a wrong assumption.
+
+The refinement splits two things that feel like one move:
+
+- **The correction** — *recording* that the premise was wrong. It's a tiny act that happens the
+  **moment you learn it**, and it **stands alone**: it never waits on a fix. Crucially, it lets the
+  original feature **ship** with the unsolved sub-goal **consciously parked**, instead of being held
+  hostage to it.
+- **The fix** — *actually* achieving the goal (here, legibility). That's a **separate, optional,
+  future** feature that cites the parked note. It might come much later, or never.
+
+Why bother separating them? Fuse the two and you get bitten twice: you defer writing the lesson
+until you fix the thing — so the dead-end goes **unrecorded and gets re-walked** — and you **can't
+ship** the original feature, because it's chained to a sub-goal you'd deliberately deferred.
+
+Two more rules fell out. First, **classify blamelessly, by what was knowable at the time** — a
+"premise miss" only means *a check was specifiable from what you knew then*, never a verdict made
+with hindsight. That distinguishes a premise you **could** have tested in advance (which loops back
+into the proof stage as a standing habit: *prove the effect, not just that it started*) from a
+genuine surprise only running could reveal (knowledge worth banking, but no fault). Second, when you
+correct a belief, **don't silently overwrite the old conclusion** — leave it visible, marked wrong
+and dated, because the cautionary trail *is* the value. (That's different from the system merely
+*changing* over time, which just updates.)
+
 ## What I'd tell past me
 
 - **Separate "what we want" from "what's true right now," and do the second from the
@@ -120,3 +151,6 @@ project. The convention itself went in the way every process change here does �
 - **Let your safety rails file your paperwork.** The sterility check on the public-facing
   repo didn't only block a bad commit — it decided, cleanly, where each kind of artifact
   belongs. Constraints, listened to, do design work for free.
+- **Separate the correction from the fix.** Recording that a plan rested on a wrong assumption
+  is its own small act — it lands the moment you learn it and doesn't wait on solving the
+  problem. Conflate them and the lesson goes unwritten until the fix happens, which may be never.

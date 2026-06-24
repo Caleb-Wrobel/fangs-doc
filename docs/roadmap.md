@@ -19,12 +19,6 @@ the ideas worth chewing on while away from the keyboard.
 - **Canonical per-node imager config.** One reproducible image definition per node
   type, so any node can be reflashed to an identical starting point without
   hand-tuning.
-- **Durable NVMe storage.** The fleet wants real SSD storage rather than leaning on
-  SD cards and a single external HDD. First checkout of a candidate drive stalled on
-  an undiagnosed enclosure-or-drive fault (**parked** — see the
-  [storage debug log](log/2026-06-storage-enclosure-debug.md)); resumes once a
-  known-good spare exists to run the deciding cross-test, and a permanent mount point
-  is chosen.
 
 ## The free-agent node
 
@@ -53,6 +47,17 @@ Still on its list:
 
 ## Things to actually noodle on
 
+- **Small-screen kiosk legibility.** On the 7″ 800×480 wall panel the dashboards fall
+  back to a cramped single-column layout with oversized stat text. The first lever
+  tried — a browser device-scale flag — *ran cleanly but did the wrong thing*: under
+  this Wayland compositor it shrank the whole window (letterboxing the screen) instead
+  of densifying the content. Open question: the right lever for **denser content that
+  fills the panel** — a larger logical resolution, an output-level scale, or page zoom —
+  and which of those survives reboots. A textbook *sound execution of an unsound premise*
+  (see the [workflow log](log/2026-06-feature-workflow.md) on telling "wrong" from
+  "incomplete"): what the flag actually does is now recorded, and the fix is a separate
+  future piece of work — deliberately decoupled from the kiosk service itself, which is
+  done.
 - **A relocatable observability "satellite."** The dashboards node is now WiFi-
   capable with failover. Could it become a *wireless-first*, relocatable node —
   carry the touchscreen to another room and have it just work — rather than being
@@ -79,6 +84,15 @@ Still on its list:
 
 ## Done recently
 
+- ✅ Durable NVMe storage for the stateful nodes: the AI/data node and the gateway now
+  keep their state (database, metrics, logs) on real SSD instead of the SD card —
+  reboot-verified, with the gateway's data plane **gated** so a missing disk fails safe
+  rather than silently starting an empty store. The earlier "enclosure-or-drive fault"
+  that parked this turned out to be **user error, not hardware** — the same drive runs
+  fine on the board's native PCIe (the USB-bridge path was the red herring; corrected
+  in the [storage debug log](log/2026-06-storage-enclosure-debug.md)). Remaining: the
+  stateless kiosk node hardens differently (read-only root), deliberately deferred until
+  its display architecture settles.
 - ✅ A structured-data layer: Postgres + pgvector on the 16 GB node (rootless container, a
   named volume, and a nightly `pg_dump` pulled to the NAS), built infrastructure-first with the
   schema deferred to its first consumer ([log](log/2026-06-postgres-data-layer.md),

@@ -1,10 +1,21 @@
-# 2026-06 — Durable storage: enclosure-or-drive debug (parked)
+# 2026-06 — Durable storage: enclosure debug, and how the verdict was wrong (resolved)
+
+> **Update (resolved): the drive was never faulty.** Mounted directly on the Pi 5's
+> M.2 HAT, the *same* NVMe enumerates cleanly over native PCIe and now runs as the
+> fleet's durable storage — formatted, mounted, and carrying the data layer (the
+> database was migrated onto it and survives a reboot). So the parked conclusion below
+> — that the fault "travels with the enclosure and drive" — was **mistaken**. The
+> host-vs-part isolation was sound as far as it went, but it stopped one step short: a
+> zero-byte reading *through a USB bridge* is not proof the drive is dead. The real
+> lesson is the cheaper one — **before condemning a part, try it on its native
+> interface.** The original narrative is kept below as an honest post-mortem of a
+> correct method that drew the wrong conclusion.
 
 **Goal:** add a real NVMe SSD as durable storage for the fleet — a brand-new drive,
 temporarily mounted in a USB-to-NVMe enclosure for first checkout before it lands in
-its permanent home. The checkout never got that far: the drive won't enumerate. This
-is the write-up of how far the diagnosis got before it was **parked** for lack of the
-one part needed to finish it.
+its permanent home. The checkout never got that far: through the enclosure, the drive
+wouldn't enumerate. This was written up as a **parked** diagnosis — see the correction
+above for how it actually resolved.
 
 ## The symptom
 
@@ -60,16 +71,22 @@ cross-test can't be run, so the verdict stays open. Rather than let a hardware
 wild-goose-chase block other work, this is **shelved** until a durable storage path —
 and the parts to validate it — are in hand.
 
-## Resuming later
+## How it actually resolved
 
-Pick up at the cross-test, fastest-first:
+The cross-test above never had to be run, because the answer came from the suspect's
+*native* interface instead. The drive was seated directly on the Pi 5's M.2 HAT — no
+USB bridge in the path — and it enumerated immediately as a PCIe device, full capacity
+and model string, healthy. That single result collapsed all three remaining suspects:
+the **drive is fine** (it works direct), so the zero-byte reading was an artifact of
+the USB-bridge path, not a dead SSD. The enclosure was simply set aside; the HAT is a
+better permanent home anyway (PCIe, not USB).
 
-1. Swap to a known data-capable USB 3 cable and port. If it jumps to SuperSpeed and
-   enumerates, the cable was masking everything.
-2. Put a **known-good NVMe** in this enclosure. Still zero bytes → the enclosure's
-   drive side is dead. Works → the original drive is the problem.
-3. Put the **original drive** in a direct M.2 slot. Undetected there too → the drive
-   is dead on arrival.
+It's now the fleet's durable storage: partitioned, formatted, and durably mounted, with
+the data layer relocated onto it and verified to come back cleanly after a power cycle.
 
-The methodology is the keeper here even though the hardware verdict isn't in yet:
-**swap one variable at a time, host before part, and don't buy a theory you can't test.**
+**The corrected lesson:** the host-before-part isolation was right, but "the fault is in
+the peripheral" is not the same as "the part is dead." A USB-to-NVMe bridge reporting
+zero bytes can mean the *bridge path* is the problem, not the drive. Before buying a
+"dead drive" theory — or a replacement — try the drive on its native interface, which
+here was both the cheapest test and the intended destination. The method was sound; the
+verdict it was *about* to reach was not.

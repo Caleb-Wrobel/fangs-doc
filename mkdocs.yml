@@ -61,6 +61,7 @@ nav:
       - Observability Relocation: log/2026-06-observability-relocation.md
       - PSI Fleetwide: log/2026-06-psi-fleetwide.md
       - Remote Access: log/2026-06-remote-access.md
+      - Durable Storage: log/2026-06-durable-storage.md
       - Storage Enclosure Debug (resolved): log/2026-06-storage-enclosure-debug.md
       - TLS Reverse Proxy: log/2026-06-tls-reverse-proxy.md
       - Wi-Fi Failover: log/2026-06-wifi-failover.md

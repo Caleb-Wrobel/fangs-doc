@@ -134,3 +134,52 @@ active" signal the alerting layer can read, and a meta-alert for "the experiment
 > **The throughline:** build the dangerous capability **inert and behind a gate first**, prove each
 > piece in isolation, and treat *observability of the experiment itself* as a first-class feature — because
 > a tool that breaks things on purpose is only safe if you can always tell its noise from the real thing.
+
+## Postscript — the first live exercise on a rebuilt node
+
+Some weeks on, the **display node was reflashed** (the read-only-root work from the durability epic)
+and rebuilt from scratch — the first chance to run a *real, intentional* chaos exercise against a
+freshly-rebuilt target. It surfaced a lesson the original build couldn't have.
+
+First, a dependency the two epics turned out to share. Chaos had been **blocked** by something entirely
+outside it: the display node, newly under read-only root, had been caught in a reboot loop (a clock-less
+board fighting a wall-clock timer — see the durable-storage log), and because the controller **stands
+down whenever any node is down**, a flapping node kept the fleet from ever reading "green." Fixing the
+reboot loop didn't just heal that node — it **un-blocked the whole harness.** A tidy illustration that
+the stand-down guard does exactly its job: no chaos onto an unhealthy fleet.
+
+The exercise itself was the display node's signature fault — **stop the kiosk service** and watch for the
+**dedicated "display-down" alert**, the failure a generic "node down" can't see (the node is perfectly up;
+only its one job is gone). The controller injected, held while the alert climbed to *firing* over its
+ten-minute window, **confirmed it from the dashboard API** (not a blind spot — the kiosk-specific alert
+really fired), **recovered** the service well before the victim-local dead-man would have, and wrote a
+complete incident. The wall went dark on purpose for ten minutes and came back on its own. Worth noting:
+recovery worked cleanly **under read-only root** — each restart re-seeds from the read-only base, so the
+RAM overlay never holds stale state.
+
+### What fought back: a reflashed target has to re-earn the controller's trust
+
+The first two attempts **declined safely**, and the *way* they failed is the lesson. A reflash regenerates
+a node's SSH host identity and wipes its authorized keys, so the trust between controller and victim breaks
+on **both** sides at once:
+
+- the controller's record of *who the victim is* (its host key) is now stale → it refuses to talk to an
+  identity it can't verify;
+- the controller's key is no longer *authorized* on the rebuilt victim → even past the first hurdle, the
+  door won't open.
+
+And re-onboarding the **single** node couldn't fix it. The trust is a **mutual exchange** — the
+controller's key must be authorized on the victim *and* the victim's fresh host key must be recorded by the
+controller — so it can only be re-established by a pass that spans **both** machines in one run. Restore one
+half by hand and the other half still bars the door.
+
+Two things to take from it. First, the **fail-safe held perfectly**: every failed attempt declined and
+logged, the victim was never touched, no half-broken state — and the harness-health record cleanly
+separates "the experiment couldn't start" from "the fleet broke." That distinguish-the-noise property, the
+whole reason the harness exists, got validated by an *unplanned* failure. Second, it leaves a standing
+operational note: **a reflashed chaos target must be re-provisioned across the whole group, not
+node-by-node** — because some trust is relational and lives in the space *between* two machines, not on
+either one.
+
+> **A closing note:** the most reassuring proof that the harness can tell its own noise from real failure
+> came not from a clean run, but from a **broken one that refused to act and said so.**

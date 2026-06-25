@@ -13,8 +13,8 @@ Not every node wants the same fix. The work split cleanly along one axis:
 - **Relocate state onto durable media** — for the nodes that *hold* data (the data node, the gateway).
 - **Stop writing to the SD at all** — for the kiosk node, which is stateless: its config is
   reproducible from automation and its logs already ship off-box, so the right move there is a
-  **read-only root** (no writes, no wear, immune to power-loss corruption). That child is design-first
-  and still ahead.
+  **read-only root** (no writes, no wear, immune to power-loss corruption). That child has since
+  landed — see *The kiosk*, below.
 
 A small shared role does the disk prep (partition, format, label-mount with `nofail`); each node
 layers its own migration on top.
@@ -63,6 +63,48 @@ Two mechanisms make that safe:
    it leaves a stale mount where I/O blocks forever, and a watchdog that hangs is a watchdog that never
    pages.
 
+## The kiosk — make the medium irrelevant
+
+The kiosk node never needed a bigger disk; it needed to stop *using* the one it has. It holds nothing
+worth keeping — its configuration is reproduced from automation, its logs already ship off-box — so the
+fix is a **read-only root**: the OS's overlay filesystem mounts the SD's root partition **read-only**
+and catches every write in a **RAM overlay** that's discarded on reboot. The card is never written: no
+wear, no write-corruption, and an unplanned power cut can't leave a half-written filesystem, because
+nothing was being written.
+
+Three details made it safe and reversible:
+
+- **Schedule the reboot first, while you still can.** A RAM overlay accumulates — mostly the browser's
+  cache on this small, memory-tight node — so a **nightly reboot** clears it (and is good hygiene for a
+  long-running browser regardless). Crucially, that schedule has to be installed *before* the root goes
+  read-only, because afterward the system can't accept new persistent units. Bake the housekeeping in,
+  then lock the door.
+- **Leave the boot partition writable — it's the escape hatch.** The overlay only protects the root; the
+  small boot partition stays writable. That's deliberate: flip the toggle off, reboot, and the node is
+  back to a fully writable root **in place** — no card-pull, no second machine. Read-only here is a
+  setting you can disarm, not a one-way door.
+- **Changing anything afterward is a deliberate dance.** Since writes evaporate on reboot, a *lasting*
+  change means disarm → reboot (writable) → change → re-arm → reboot. Friction by design — which is
+  exactly why this was the *last* thing done to the node, only once its display work had settled and the
+  iterate-often phase was over.
+
+**Proving it: pull the plug.** A graceful reboot isn't the real test; an *ungraceful* power-yank is.
+Read-only root makes a clean recovery nearly a foregone conclusion — the card can't corrupt because
+it's read-only, the overlay rebuilds because it's RAM — but "nearly" isn't "proven," so we pulled the
+power. It came back clean: root read-only, overlay empty, dashboard back on the screen.
+
+**One pull, two proofs (on purpose).** The node had been deliberately left on **wireless only**, no
+network cable. So the same cold boot that proved the read-only root *also* exercised the
+wired-to-wireless failover from a standing start: with no cable at boot, the node brought its wireless
+standby up on its own and rejoined the network — a path previously only confirmed as *configured*, now
+shown working for real, and working under a read-only root. A clean two-for-one.
+
+**A small thing read-only broke (worth knowing).** Making the root an overlay changed its *filesystem
+type*, and the metrics exporter excludes overlay filesystems by default — so the node's root-disk-usage
+reading quietly dropped off the fleet dashboard, leaving one blank cell. No real loss (a "% disk used"
+is meaningless when every write goes to RAM), but a tidy reminder that hardening one layer can ripple
+into another layer's assumptions. Filed as a known, low-priority follow-up.
+
 ## Lessons that only showed up under test
 
 - **Measure before you "optimize" — the assumption was backwards.** The plan assumed the metrics
@@ -98,7 +140,7 @@ here is bandwidth-bound. Spend the effort on the failure modes, not the megabyte
 
 ## Where it stands
 
-Two of three nodes are durable: the data layer and the gateway's observability data both live on NVMe,
-gated and reboot-proven; the kiosk's read-only-root work is the remaining child. The throughline of
-the whole epic: **the failure modes are the design** — what happens when the new disk *isn't there*
-mattered more than anything that happens when it is.
+All three nodes are hardened: the data layer and the gateway's observability data live on NVMe (gated
+and reboot-proven), and the kiosk's root is read-only (proven by a power-yank). **The epic is
+complete.** The throughline: **the failure modes are the design** — what happens when the new disk
+*isn't there*, or when the power drops mid-write, mattered more than anything that happens when it is.

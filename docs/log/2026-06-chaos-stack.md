@@ -125,11 +125,17 @@ the incidents (what broke, whether it paged, the written narrative), and the har
 
 ## How it ships, and what's parked
 
-It ships **manual-first**: the daily schedule is installed but **disabled**, and the one physically-risky
-action (CPU/thermal load on a passively-cooled board) is excluded from automatic selection — both flip on
-with a one-liner once the early runs have been watched by hand. Parked for later: marking chaos windows
-directly on the *fleet-wide* dashboards (so any graph shows "this dip was us"), a real-time "chaos is
-active" signal the alerting layer can read, and a meta-alert for "the experiment hasn't run in a while."
+It shipped **manual-first**: the daily schedule installed **disabled**, and the one physically-risky
+action (CPU/thermal load on a passively-cooled board) excluded from automatic selection. After the early
+runs were watched by hand — culminating in a full clean cycle on the rebuilt kiosk node (see the
+postscript) — the **daily cadence was switched on.** It's a *repo-managed* enable, not a transient
+toggle: a flag the role honors, so a later reconcile can't silently turn it back off (the original
+"flip it with a one-liner" plan would have been undone on the next apply — the role had been
+re-disabling the timer every run). The physically-risky thermal action **stays manual-only** regardless
+(it's weighted out of the automatic pool), so the autonomous schedule never selects it. Parked for later:
+marking chaos windows directly on the *fleet-wide* dashboards (so any graph shows "this dip was us"), a
+real-time "chaos is active" signal the alerting layer can read, and a meta-alert for "the experiment
+hasn't run in a while."
 
 > **The throughline:** build the dangerous capability **inert and behind a gate first**, prove each
 > piece in isolation, and treat *observability of the experiment itself* as a first-class feature — because

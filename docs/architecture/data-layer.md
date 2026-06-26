@@ -30,5 +30,9 @@ that acceptable:
 The **first consumer has landed**: the [daily report](../log/2026-06-daily-report.md) now lives on
 this node and persists one structured row per fleet node on every run, so the first table was shaped
 by a real requirement rather than a guess — and through a deliberately **insert-only** writer role,
-distinct from the read-only backup role and the superuser. A retrieval pipeline needing the vector
-store is the remaining anticipated consumer, sitting alongside the node's embedding model.
+distinct from the read-only backup role and the superuser.
+
+The **vector store now has its consumer too**: [RAG over the fleet's telemetry](../log/2026-06-telemetry-rag.md)
+embeds notable log lines into a vector table and answers plain-English questions about them — grounded
+in retrieval, running on the node's own embedding model and LLM. It's the second retrieval consumer,
+after the [chaos stack](../log/2026-06-chaos-stack.md)'s incident memory.

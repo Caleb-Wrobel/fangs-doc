@@ -32,11 +32,6 @@ instead of on a cloud API.
 
 Still on its list:
 
-- **RAG over the fleet's own telemetry** — point a local model at the metrics and logs the
-  cluster already collects and ask it questions in plain language. The embedding model and now
-  a pgvector store ([data layer](architecture/data-layer.md)) are both in place; this is the
-  next build, and the reason the homelab is a good fit: it generates exactly the kind of
-  private, messy, domain-specific data a local model is good at.
 - **Reach it from the open internet without a WAN port** — an overlay so the laptop can use
   it from anywhere, not just the upstream LAN. The obvious shortcut (the egress VPN's built-in
   mesh) is **ruled out** — it force-enables a vendor firewall that breaks LAN DHCP (see the
@@ -85,6 +80,13 @@ Still on its list:
 
 ## Done recently
 
+- ✅ RAG over the fleet's own telemetry: a local command-line tool that embeds the **notable**
+  log lines the cluster already collects into the pgvector store, then answers plain-English
+  questions — *"what's been failing on the NAS?"* — grounded in the retrieved logs, with
+  citations, entirely on local hardware. The data layer's second retrieval consumer. A
+  deliberately **local** interface (not a chat bot) keeps the fleet strictly outbound-only; a
+  word-boundary filter that silently matched nothing — a bug a dry-run couldn't see, only a live
+  run could — was the lesson ([log](log/2026-06-telemetry-rag.md)).
 - ✅ Durable NVMe storage for the stateful nodes: the AI/data node and the gateway now
   keep their state (database, metrics, logs) on real SSD instead of the SD card —
   reboot-verified, with the gateway's data plane **gated** so a missing disk fails safe

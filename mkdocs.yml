@@ -47,6 +47,7 @@ nav:
   - Build Log:
       - Index: log/README.md
       - Breaking the Fleet on Purpose: log/2026-06-chaos-stack.md
+      - RAG over Telemetry: log/2026-06-telemetry-rag.md
       - The Data Layer: log/2026-06-postgres-data-layer.md
       - Daily Report: log/2026-06-daily-report.md
       - Re-onboarding a Node: log/2026-06-reflash-onboarding.md

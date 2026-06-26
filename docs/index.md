@@ -67,8 +67,9 @@ flat, trusted LAN.
 ## Conventions
 
 - **Config management:** Ansible — one role per concern, hosts grouped by function.
-- **OS:** Raspberry Pi OS Lite (Trixie), headless, across the fleet (one node runs
-  the full desktop image to drive a kiosk touchscreen).
+- **OS:** Raspberry Pi OS Lite (Trixie), headless, across the whole fleet — including the
+  kiosk node, which drives its touchscreen with a minimal Wayland compositor + one browser,
+  not a full desktop.
 - **Name resolution:** every node carries the full fleet by name; the gateway
   resolves for clients. Internal services answer on `*.fangs.internal`.
 - **Commit messages:** subject lines are 5-7-5 haiku. Yes, really.

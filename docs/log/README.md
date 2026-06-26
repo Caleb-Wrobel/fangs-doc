@@ -12,8 +12,9 @@ Newest first.
   real alert via the dashboard API and recovers; a **stand-down guard** (won't poke an already-hurting
   fleet) plus dual-sink harness-health (so chaos is distinguishable from real failure); a **retrieval
   memory** that narrates each incident with an on-device model and answers "has this happened before?"
-  semantically; and a **dashboard**. Ships manual-first. The throughline: build the dangerous capability
-  inert + behind a gate, and treat observability *of the experiment itself* as first-class.
+  semantically; and a **dashboard**. Shipped manual-first; the daily cadence is now switched on. The
+  throughline: build the dangerous capability inert + behind a gate, and treat observability *of the
+  experiment itself* as first-class.
 - **2026-06** — [A database for the fleet](2026-06-postgres-data-layer.md): standing up a
   Postgres + pgvector data layer on the 16 GB node — rootless Podman, a named volume (to dodge
   the rootless permission fight), the official multi-arch pgvector image, a read-only backup

@@ -46,6 +46,7 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - A Bus for the Fleet: log/2026-06-mqtt-backbone.md
       - Breaking the Fleet on Purpose: log/2026-06-chaos-stack.md
       - RAG over Telemetry: log/2026-06-telemetry-rag.md
       - The Data Layer: log/2026-06-postgres-data-layer.md

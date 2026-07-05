@@ -46,6 +46,8 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - The Trust That Was Not: log/2026-07-internal-tls-trust.md
+      - Workflow Themes: log/2026-07-workflow-themes.md
       - A Bus for the Fleet: log/2026-06-mqtt-backbone.md
       - Breaking the Fleet on Purpose: log/2026-06-chaos-stack.md
       - RAG over Telemetry: log/2026-06-telemetry-rag.md

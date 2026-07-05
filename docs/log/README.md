@@ -3,6 +3,22 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The trust that wasn't](2026-07-internal-tls-trust.md): a "gather into a TLS
+  revisit" note turned into the discovery that **half the fleet couldn't complete a TLS handshake**
+  to its own services — CA file perfectly in place, active trust bundle silently missing it, and the
+  change-triggered rebuild constitutionally unable to fix a system broken *at rest*. The fix is four
+  small tasks around one idea — assert the *effect* every run, heal from scratch, re-assert — and the
+  re-assert earned its keep immediately: the bundle tool's incremental mode "healed" with a success
+  code while repairing nothing, and only the effect-check caught the lie. Plus a loud refusal on the
+  read-only kiosk node, where a "successful" heal would evaporate at the nightly reboot.
+- **2026-07** — [Themes: a second axis](2026-07-workflow-themes.md): the feature pipeline gains a
+  third noun, and a cleaner hierarchy of intent: **themes are the top-level objectives** (standing
+  concerns like "security" that never finish), **epics are the top-level deliverables** (bounded,
+  chartered, they end), features are the changes. Themes ride orthogonal to the hierarchy, inherit
+  from epic to child, and live in a curated dictionary plus a machine-queryable registry so two
+  questions are one-liners: *what open work is there toward X?* and *what was already done under X
+  when something breaks?* Renamed from "tag" mid-review — that word was already claimed twice in
+  this stack.
 - **2026-06** — [Breaking the fleet on purpose](2026-06-chaos-stack.md): the fleet's first multi-part
   *epic* — a chaos-engineering harness that injects known, self-reverting faults into the two leaf nodes
   *only* (the gateway and AI node are never targets) to prove alerts fire and nodes recover, treating

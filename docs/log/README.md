@@ -3,6 +3,21 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [Watching the cache](2026-07-cache-observability.md): a package-cache + registry
+  dashboard, built *before* a rolling upgrade so the cache can be watched warming (hit-ratio climbing,
+  bandwidth saved) as the fleet pulls. The registry had native metrics (a config flag); the apt cache
+  had none, so a tiny exporter parses its HTML status page into the metrics agent's textfile drop-box.
+  A clinic in effect-vs-artifact: three times the thing *looked* installed (wrong tag, an owner-only
+  file the reader couldn't open, a dashboard missing from the deploy list) while doing nothing — each
+  caught only by checking the far end, not the near end.
+- **2026-07** — [Retiring read-only root](2026-07-readonly-root-retired.md): removing a guard that
+  cost more than it saved. The kiosk's read-only root spared a cheap SD card from wear but taxed
+  *every* change (disarm → apply → reboot → change → re-arm → reboot), silently ate config updates
+  into its RAM overlay, and once wedged the clock-less node in a reboot loop. Since a dead card is a
+  20-minute reflash, the guard protected a cheap failure at constant cost — so it's gone, with **no**
+  lighter replacement (that'd be the same anticipatory instinct, and a RAM disk would tax the fleet's
+  most memory-starved node). Includes the trap of deleting a stateful role: it must un-change the
+  machine *before* you delete the code.
 - **2026-07** — [The trust that wasn't](2026-07-internal-tls-trust.md): a "gather into a TLS
   revisit" note turned into the discovery that **half the fleet couldn't complete a TLS handshake**
   to its own services — CA file perfectly in place, active trust bundle silently missing it, and the

@@ -75,6 +75,11 @@ feature registered, status flipped to landed at merge. The mechanism was deliber
 **empty** otherwise: no retroactive re-labelling sweep of past work. Themes accrete going
 forward, at the moment each feature opens, when the labelling costs nothing.
 
+> **Superseded 2026-07-06.** The no-retroactive-sweep call was reversed — deliberately, with the
+> original reasoning intact above. The registry was backfilled to the repo's first commit, and the
+> sweep grew a new piece the original design lacked: per-entry roadside warnings. The why and the
+> how: [The road looks back](2026-07-registry-retrofit.md).
+
 ## What I'd tell past me
 
 - **Not everything bounded-looking is a project.** Some groupings are concerns, not

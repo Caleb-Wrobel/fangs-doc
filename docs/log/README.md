@@ -3,6 +3,13 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The road looks back](2026-07-registry-retrofit.md): reversing the themes
+  mechanism's "no retroactive sweep" call — deliberately, with the original reasoning preserved
+  under a dated supersede note. The work registry now reaches back to the repo's first commit
+  (three epics, fifty-four features, three process eras marked, nothing fabricated), and grew the
+  piece the original design lacked: **roadside warnings** — one-line lessons pinned to the exact
+  work that earned them, wrong verdicts preserved as wrong, each pointing at the full story. A
+  forensics index that can't see the formative mistakes indexes the wrong era.
 - **2026-07** — [Watching the cache](2026-07-cache-observability.md): a package-cache + registry
   dashboard, built *before* a rolling upgrade so the cache can be watched warming (hit-ratio climbing,
   bandwidth saved) as the fleet pulls. The registry had native metrics (a config flag); the apt cache

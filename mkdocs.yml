@@ -46,6 +46,7 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - The Road Looks Back: log/2026-07-registry-retrofit.md
       - Watching the Cache: log/2026-07-cache-observability.md
       - Retiring Read-only Root: log/2026-07-readonly-root-retired.md
       - The Trust That Was Not: log/2026-07-internal-tls-trust.md

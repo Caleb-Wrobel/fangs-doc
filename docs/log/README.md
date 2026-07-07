@@ -3,6 +3,14 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The old man in the basement](2026-07-morel-wake-work-sleep.md): the fleet's first
+  non-Pi, non-ARM node — an aging amd64 desktop that joins as *summoned muscle*, sleeping in
+  suspend-to-RAM and woken by a Wake-on-LAN magic packet from the AI node (~6 s, RAM preserved).
+  Onboarding it as the Pi-only runbook's first stranger surfaced latent assumptions (a missing
+  baseline tool, a Windows-inherited local-time clock) and left the runbook better. The real lesson
+  is monitoring: a node *designed* to be off looks identical to a dead one, so it's excused from the
+  liveness alarm — a trade named out loud (a real crash won't page either; outcome-based monitoring
+  is the deferred right answer).
 - **2026-07** — [The road looks back](2026-07-registry-retrofit.md): reversing the themes
   mechanism's "no retroactive sweep" call — deliberately, with the original reasoning preserved
   under a dated supersede note. The work registry now reaches back to the repo's first commit

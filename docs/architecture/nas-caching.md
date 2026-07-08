@@ -6,7 +6,7 @@ images locally, and keeps a nightly copy of the logs. The theme tying all of tha
 together: **the fleet shouldn't have to phone the internet to rebuild itself, and
 shouldn't lose its memory because one node's SD card died.**
 
-It's the most modest hardware in the fleet — a 1 GB Pi 3B+ — which is exactly why
+It's modest hardware — a 1 GB Pi 3B+ — which is exactly why
 it's interesting. Several of its design choices are downstream of *not having much
 RAM* and *not wanting to wear out an SD card*.
 
@@ -120,7 +120,7 @@ and mirrors its log data store to the HDD.
 
 ## Surviving on 1 GB
 
-Two small things keep the smallest node honest under load:
+Two small things keep this small node honest under load:
 
 - **zram** gives it a block of **compressed swap in RAM**, so memory pressure is
   absorbed by compressing cold pages instead of falling back to painfully slow

@@ -26,6 +26,12 @@ slowly; anything that spills out of memory crawls. For ordinary generation, pati
 fine — but a model that doesn't fit in RAM is the wall. Disk is *not* the scarce
 resource; the node's card has plenty of room for a generous library.
 
+**A GPU tier now exists elsewhere.** The always-on AI node stays CPU-only *by design* — it's the
+reflex tier for light, always-available models. Heavier work has a new home: **morel**, an amd64 node
+with a discrete GPU, measured running the same small models several times faster (and larger ones at
+batch speed). It sleeps until summoned by Wake-on-LAN, so the fleet gains GPU inference without paying
+for a second always-on box ([the old man in the basement](../log/2026-07-morel-wake-work-sleep.md)).
+
 There's a **second wall** that only shows up with large prompts: **prefill**. Before a
 CPU model emits a token it has to process the entire input, and that cost scales with
 prompt size. For bounded prompts it's invisible; for a very large context it becomes

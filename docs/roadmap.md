@@ -32,12 +32,11 @@ instead of on a cloud API.
 
 Still on its list:
 
-- **Reach it from the open internet without a WAN port** — an overlay so the laptop can use
-  it from anywhere, not just the upstream LAN. The obvious shortcut (the egress VPN's built-in
-  mesh) is **ruled out** — it force-enables a vendor firewall that breaks LAN DHCP (see the
-  [remote-access log](log/2026-06-remote-access.md)). Off-LAN access is an SSH tunnel through
-  the gateway for now; the durable candidate is a **self-hosted WireGuard road-warrior**, whose
-  one trade-off is the single inbound port the mesh would have avoided.
+- ✅ **Reach it from the open internet** — shipped as a **self-hosted WireGuard road-warrior** on
+  the gateway (2026-07-08). The zero-inbound-port ideal (an overlay/mesh) was **ruled out** — the
+  egress VPN's built-in mesh force-enables a vendor firewall that breaks LAN DHCP (see the
+  [remote-access log](log/2026-06-remote-access.md)) — so the road-warrior won, accepting one inbound
+  UDP port as the price. Split-tunnel, DNS over the gateway's resolver; it replaces the interim SSH tunnel.
 - **Authentication on the raw inference API** — the chat UI has its own login; the API itself
   is currently open on the trusted LAN.
 
@@ -94,8 +93,9 @@ Still on its list:
   that parked this turned out to be **user error, not hardware** — the same drive runs
   fine on the board's native PCIe (the USB-bridge path was the red herring; corrected
   in the [storage debug log](log/2026-06-storage-enclosure-debug.md)). Remaining: the
-  stateless kiosk node hardens differently (read-only root), deliberately deferred until
-  its display architecture settles.
+  stateless kiosk node was hardened with a read-only root — then **retired** (2026-07-05): the
+  toggle-and-reboot friction outweighed the benefit for a node that reflashes in ~20 minutes, so
+  reflash-on-death is the strategy instead ([retiring read-only root](log/2026-07-readonly-root-retired.md)).
 - ✅ A structured-data layer: Postgres + pgvector on the 16 GB node (rootless container, a
   named volume, and a nightly `pg_dump` pulled to the NAS), built infrastructure-first with the
   schema deferred to its first consumer ([log](log/2026-06-postgres-data-layer.md),
@@ -121,9 +121,10 @@ Still on its list:
   agent prompt is the wall — minutes per turn, not viable interactively. Confirmed what the
   node is for (chat / retrieval / light tasks) and raised the served context window along the
   way ([log](log/2026-06-local-coding-agent.md)).
-- ✅ Decided the off-LAN access story: ruled out the egress VPN's built-in mesh (it
-  force-enables a DHCP-breaking vendor firewall), settled on an SSH tunnel for now with a
-  self-hosted WireGuard road-warrior as the durable candidate ([log](log/2026-06-remote-access.md)).
+- ✅ Decided **and built** the off-LAN access story: ruled out the egress VPN's built-in mesh (it
+  force-enables a DHCP-breaking vendor firewall), and landed a self-hosted WireGuard road-warrior
+  (split-tunnel, one inbound UDP port) on 2026-07-08, replacing the interim SSH tunnel
+  ([log](log/2026-06-remote-access.md)).
 - ✅ Local AI inference on the free-agent node: small LLMs (general / coding / fast /
   embeddings) with a browser chat front-end, fronted by the proxy and reachable from the
   laptop over an SSH tunnel ([log](log/2026-06-local-ai.md)).

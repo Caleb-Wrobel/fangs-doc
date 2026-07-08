@@ -101,14 +101,15 @@ Start at the [home page](index.md) for the human framing. Then:
 
 ## The fleet at a glance (roles, never addresses)
 
-Four single-board computers on a flat, trusted LAN behind one gateway:
+Five nodes on a flat, trusted LAN behind one gateway — four single-board computers and one amd64 box:
 
-| Node      | Role          | Carries (conceptually)                                  |
-|-----------|---------------|---------------------------------------------------------|
-| gateway   | WAN edge      | routing/NAT/firewall, VPN egress + kill switch, DNS, log aggregation |
-| NAS       | storage/cache | file shares, package cache, image registry, nightly log backup |
-| dashboards| observability | metrics (Prometheus) + Grafana kiosk on a touchscreen   |
-| free agent| TBD           | earmarked for local AI/ML; role still being decided     |
+| Node        | Role               | Carries (conceptually)                                  |
+|-------------|--------------------|---------------------------------------------------------|
+| gateway     | WAN edge + obs     | routing/NAT/firewall, VPN egress + kill switch, DNS, and the observability stack (metrics, dashboards, logs) |
+| NAS         | storage/cache      | file shares, package cache, image registry, nightly log backup |
+| kiosk       | observability wall | a Grafana kiosk on a touchscreen, rendering the gateway's dashboards |
+| AI / data   | local AI + data    | LLM inference + a chat UI, and a Postgres + pgvector data layer |
+| batch / GPU | summoned muscle    | GPU inference, woken on demand by Wake-on-LAN and asleep otherwise |
 
 Only the gateway touches the WAN; the others are peers behind it. The security
 boundary that matters is the WAN edge, not host-to-host — the docs call this

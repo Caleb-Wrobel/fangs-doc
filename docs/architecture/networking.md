@@ -91,7 +91,9 @@ filtering policy from outside, violating the principle that the firewall owns th
 policy in one place. (The full story is in the
 [remote-access build log](../log/2026-06-remote-access.md).)
 
-If "logically on the LAN from anywhere" ever justifies a real build, the path is a
-**self-hosted WireGuard road-warrior** on the gateway — the vendor firewall stays
-off and the kill-switch-in-the-firewall model stays intact, at the cost of the one
-inbound port the mesh would have avoided. That trade-off is the open question.
+That build now exists: a **self-hosted WireGuard road-warrior** on the gateway (landed
+2026-07-08). The vendor firewall stays off and the kill-switch-in-the-firewall model stays
+intact; the cost is a single inbound UDP port, which WireGuard keeps invisible by never
+answering an unauthenticated packet. It's **split-tunnel** — a client off the LAN reaches the
+fleet by name (DNS resolved by the gateway's own resolver) while ordinary traffic stays on the
+client's own upstream, so remote access doesn't drag everything through the egress VPN.

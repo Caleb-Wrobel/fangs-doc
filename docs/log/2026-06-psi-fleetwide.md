@@ -18,7 +18,7 @@ everything's actually fine. PSI measures the thing you care about directly: the
 pressure is an early warning that a node is about to thrash — visible *before* the
 squeeze actually bites.
 
-The node this matters most for is the **smallest one** — a 1 GB Pi 3B+ doing
+The node this matters most for is a **memory-tight 1 GB node** — a Pi 3B+ doing
 storage and caching work. It's the one with the least headroom and the most to gain
 from seeing pressure climb before it tips over. So PSI started there and then went
 fleet-wide so one dashboard could compare every node on the same axis.

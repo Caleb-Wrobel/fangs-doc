@@ -8,7 +8,7 @@ happened, in words). Both are fleet-wide and both land somewhere durable.
 - **node_exporter** runs on every node, exposing host metrics (CPU, memory, disk,
   network, and pressure-stall information).
 - **Prometheus** runs on the **gateway** — the observability host, co-located with the
-  logs and the reverse proxy — and scrapes all four nodes.
+  logs and the reverse proxy — and scrapes every node in the fleet.
 - **Grafana** renders it, also on the gateway.
 - A separate **lean kiosk node** drives a **7″ touchscreen** as an always-on wall display,
   reaching Grafana over the proxy rather than running it locally (see [The kiosk](#the-kiosk)).

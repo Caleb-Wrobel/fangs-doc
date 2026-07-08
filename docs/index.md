@@ -23,7 +23,7 @@ firewall, its own DNS, its own VPN egress, its own internal certificate authorit
 and its own metrics-and-logs stack. Nothing depends on a cloud account; the only
 thing it asks of the outside world is an internet handoff.
 
-The constraint is half the fun. Everything runs on modest ARM hardware, every node
+The constraint is half the fun. Most of it runs on modest ARM boards — with one amd64 workhorse for the heavy lifting — every node
 is described in code and reproducible from a wiped SD card, and the rule of thumb
 is *understand it before you automate it*. This notebook is where I write down how
 the pieces fit, what broke on the way, and what I'm thinking about building next.
@@ -32,10 +32,11 @@ the pieces fit, what broke on the way, and what I'm thinking about building next
 
 | Host    | Hardware       | Role          | Carries |
 |---------|----------------|---------------|---------|
-| `limen` | Pi 5 (4 GB)    | Gateway       | Routing / NAT / firewall, VPN egress, recursive DNS, IDS/IPS, log aggregation |
+| `limen` | Pi 5 (4 GB)    | Gateway + observability | Routing / NAT / firewall, VPN egress, recursive DNS, IDS/IPS (planned), observability stack (Prometheus + Grafana + Loki) |
 | `cream` | Pi 3B+         | NAS / caching | Network storage, package cache, image registry, nightly log backups |
-| `skoll` | Pi 3B          | Observability | Metrics (Prometheus), dashboards (Grafana kiosk on a 7″ touchscreen) |
-| `auxin` | Pi 5 (16 GB)   | Local AI      | LLM inference (Ollama) + chat front-end (Open WebUI), embeddings |
+| `skoll` | Pi 3B          | Kiosk         | Grafana kiosk on a 7″ touchscreen (displays limen's dashboards) |
+| `auxin` | Pi 5 (16 GB)   | Local AI / data | LLM inference (Ollama) + chat front-end (Open WebUI), embeddings, Postgres + pgvector data layer |
+| `morel` | amd64 (24 GB, GTX 970) | Batch / GPU | GPU inference (Ollama), Wake-on-LAN wake-work-sleep — asleep in S3 until summoned |
 
 `limen` is the only node on the WAN edge; everything else sits behind it on a
 flat, trusted LAN.

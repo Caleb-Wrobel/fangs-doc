@@ -1,8 +1,14 @@
 # Onboarding a node
 
-How a freshly-flashed Raspberry Pi becomes a managed member of the fleet. This is the
+How a freshly-flashed node becomes a managed member of the fleet. This is the
 steady-state procedure; the war story of the first node brought in this way lives in
 the [build log](../log/README.md).
+
+The fleet began all–Raspberry Pi and now carries one amd64 node, so this runbook is written
+arch-agnostically where it can be. The genuine non-Pi deviations — legacy-BIOS boot instead of the
+Pi bootloader, a hardware clock that starts in local time rather than UTC, and a package or two the
+minimal installer omits — are called out where they arise. The first non-Pi walked every one of them
+into the open.
 
 The fleet sits behind the gateway on a flat, trusted LAN, and the machine that runs
 Ansible is deliberately *not* on that LAN — so every node is reached by jumping through

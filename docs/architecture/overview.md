@@ -1,32 +1,27 @@
 # Architecture overview
 
-fangs is a four-node Raspberry Pi cluster that behaves like a miniature, fully
-self-hosted network: its own gateway, its own DNS, its own VPN egress, its own
+fangs is a five-node cluster — four Raspberry Pis plus one amd64 workhorse — that
+behaves like a miniature, fully self-hosted network: its own gateway, its own DNS, its own VPN egress, its own
 internal certificate authority, and its own observability stack. Nothing here
 depends on a cloud provider; the only upstream dependency is a residential
 internet handoff.
 
 ## Shape of the system
 
-```
-            internet
-               │
-        ┌──────┴───────┐
-        │    limen      │   gateway: NAT, firewall, VPN egress,
-        │  (WAN edge)   │   recursive DNS, IDS/IPS, log aggregation
-        └──────┬───────┘
-               │  flat, trusted LAN
-        ┌──────┴───────────────────────┐
-        │        managed switch         │
-        └──┬──────────┬──────────┬──────┘
-           │          │          │
-        ┌──┴──┐    ┌──┴──┐    ┌──┴──┐
-        │cream│    │skoll│    │auxin│
-        │ NAS │    │ obs │    │ TBD │
-        └─────┘    └─────┘    └─────┘
+```mermaid
+graph TD
+    NET([internet · residential handoff])
+    NET ---|"WAN edge — only limen touches it"| LIMEN
+    LIMEN["limen — Pi 5<br/>gateway · NAT · firewall<br/>VPN egress (tunnel-or-drop)<br/>DNS · reverse proxy · observability"]
+    LIMEN ---|"flat, trusted LAN"| SW["managed switch"]
+    SW --- CREAM["cream — Pi 3B+<br/>NAS · caches · backups"]
+    SW --- SKOLL["skoll — Pi 3B<br/>Grafana kiosk"]
+    SW --- AUXIN["auxin — Pi 5<br/>local AI · Postgres data layer"]
+    SW --- MOREL["morel — amd64 · GTX 970<br/>batch · GPU inference<br/>sleeps in S3, WoL-summoned"]
+    AUXIN -.->|"Wake-on-LAN"| MOREL
 ```
 
-Only `limen` touches the WAN. The other three are peers on a single flat LAN —
+Only `limen` touches the WAN. The others are peers on a single flat LAN —
 deliberately trusted, because the security boundary that matters is the WAN edge,
 not host-to-host. (See *design principles* below.)
 

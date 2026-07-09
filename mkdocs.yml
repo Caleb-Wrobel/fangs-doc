@@ -60,6 +60,7 @@ nav:
       - Retiring Read-only Root: log/2026-07-readonly-root-retired.md
       - The Trust That Was Not: log/2026-07-internal-tls-trust.md
       - Workflow Themes: log/2026-07-workflow-themes.md
+      - Scale to Zero: log/2026-07-scale-to-zero.md
       - A Bus for the Fleet: log/2026-06-mqtt-backbone.md
       - Breaking the Fleet on Purpose: log/2026-06-chaos-stack.md
       - RAG over Telemetry: log/2026-06-telemetry-rag.md

@@ -50,3 +50,19 @@ Two API facts earned their place in the notes: this engine reports *every* file-
 board as "not provisioned" when UI-editing is allowed (the real provenance marker is the
 provisioning external-id), and UI-built boards survive reboots in the engine's database — only
 a deliberate delete or a reflash removes them. Assumptions about cleanup-by-restart die hard.
+
+## Coda, next day: the letter learns three tongues
+
+The weekly digest — until now a journal-errors-only letter — gained three counts-only sections
+built from the same queries the new boards validated: a network week (honestly labelled
+"partial week" until the tap has a full seven days of history, and "devices seen" rather than
+"new devices" until a baseline exists to diff against), a storage week whose SD-wear line is
+the consumer the earlier wear analysis never had, and an availability week that pulls the
+sleeping node out of the flap count entirely — its ninety-odd "flaps" are the wake-on-demand
+design working, and a rollup that narrated them as instability would be the same lie the
+chaos annotations exist to prevent. One measurement lesson earned bold: naive week-ago offset
+queries silently return only the nodes that never flapped (the instant lands in a scrape gap
+on everyone else); range functions that use first-and-last samples answer for the whole
+fleet. Every new section degrades to a visible gap note if its data source is down —
+drilled, not assumed — and the language model's scope was deliberately left untouched:
+counts are the floor, prose is garnish.

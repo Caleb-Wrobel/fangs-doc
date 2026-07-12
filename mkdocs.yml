@@ -54,6 +54,7 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - One Die, Many Doors: log/2026-07-dashboard-consolidation.md
       - The Transcriber in the Doorway: log/2026-07-zeek-flow-visibility.md
       - The Old Man in the Basement: log/2026-07-morel-wake-work-sleep.md
       - The Road Looks Back: log/2026-07-registry-retrofit.md

@@ -3,6 +3,13 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [One die, many doors](2026-07-dashboard-consolidation.md): dashboard drift, cured
+  structurally. The engine's native library panels can't be file-provisioned, so shared panels are
+  build-time *stamped* from canonical sources by a tiny committed generator; the topology board
+  learned that a sleeping node is not a dead one (blue ZZZ, not red DOWN); dynamic boards were held
+  to "no query names a host" so the next node appears with zero edits; and four new boards landed —
+  services (instantly surfacing a real failed-unit finding), storage with an SD-wear watch, links
+  (born showing a genuine WiFi failover), and the UI-built DNS board exported to safety.
 - **2026-07** — [The transcriber in the doorway](2026-07-zeek-flow-visibility.md): the repo's
   oldest open promise — network-layer telemetry on the gateway — lands as Zeek transcribing the LAN
   bridge, while the Suricata half is deliberately descoped (a home LAN needs a record, not a judge).

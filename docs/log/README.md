@@ -3,6 +3,14 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The transcriber in the doorway](2026-07-zeek-flow-visibility.md): the repo's
+  oldest open promise — network-layer telemetry on the gateway — lands as Zeek transcribing the LAN
+  bridge, while the Suricata half is deliberately descoped (a home LAN needs a record, not a judge).
+  Native by necessity, lean by choice: the bare core package under a hand-written non-root systemd
+  unit, JSON logs on the durable NVMe with a mount-gate, shipped through the existing log pipeline
+  with the log type as a queryable label. The first hours paid out: the un-telemetried Apple base
+  station finally has a voice, and the kiosk's browser was caught phoning a Google optimization
+  service dozens of times an hour.
 - **2026-07** — [The old man in the basement](2026-07-morel-wake-work-sleep.md): the fleet's first
   non-Pi, non-ARM node — an aging amd64 desktop that joins as *summoned muscle*, sleeping in
   suspend-to-RAM and woken by a Wake-on-LAN magic packet from the AI node (~6 s, RAM preserved).

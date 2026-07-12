@@ -71,3 +71,20 @@ name-service announcements, all transcribed in the DNS log. And the kiosk's brow
 out to be quietly consulting a Google optimization service dozens of times an hour —
 harmless, but invisible yesterday, and now a one-flag candidate for the kiosk role's next
 touch-up. That is the feature working as intended: not alarms, just the wire, written down.
+
+## Addendum, same evening: the first reader
+
+A transcriber nobody reads is a disk heater, so the first consumer followed the same day: a
+provisioned **Network dashboard** — top talkers, per-client DNS rates, top queried names, TLS
+server names, and a ticker for the oddity channels. Fleet nodes display under their wolf names;
+anything unrecognized stays a raw address on purpose, because an unfamiliar number on the board
+*is* the signal. It worked immediately: two unknown addresses turned out to be a phone (iOS's
+per-network randomized MAC) and — better — the Apple base station itself, which had quietly
+drifted to a different address than every note said it had. That earned it a permanent DHCP
+reservation via a new mechanism for pinning non-fleet appliances, and taught the general lesson:
+**IP-keyed references to DHCP'd devices rot — pin the lease or don't write the number down.**
+Two smaller lessons from the build: the log store's JSON parser flattens dotted field names, and
+its query language refuses to add two unwrapped range-aggregations in one expression — the
+dashboard joins two queries per table instead. Validation went through the dashboard engine's own
+query API rather than the log store directly, so the datasource wiring was proven, not assumed —
+and the one thing an API can't judge, the rendered board, got human eyes before the merge.

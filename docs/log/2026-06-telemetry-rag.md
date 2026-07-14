@@ -96,3 +96,23 @@ a telemetry assistant you'd actually trust.
 
 The remaining work is all tuning — narrowing what counts as "notable", sizing how much context each
 answer gets — none of it structural. The pipe is connected.
+
+## Coda, weeks later: the memory gets a voice (2026-07-14)
+
+The store worked, but reaching it meant SSHing to the AI node and running a CLI — so it went
+mostly unused. A memory nobody can reach is a table nobody queries. The fix was small and
+high-leverage: give it a surface in the chat box the fleet already runs. Now there's a **"Fleet
+Memory" model** in the dropdown; pick it, ask *"what DNS errors has the gateway logged?"*, and a
+grounded, source-cited answer streams back — no shell.
+
+The interesting design problem was reaching the vector store from *inside* the chat app's container
+without duplicating the retrieval logic or handing the app a database credential. The answer was to
+put a thin, loopback-only HTTP endpoint in front of the existing retrieval engine — the same code
+the CLI uses — and make the chat-app plugin a **~30-line transport shim**: no query, no grounding
+prompt, no secret of its own, just "relay this question to localhost and stream the tokens back."
+The HTTP boundary became the seam that lets one copy of the retrieval logic serve both the CLI and
+the chat, while the database credential stays in exactly one root-owned file the chat app never
+sees. The plugin lives as a row in the app's database, so it survives an image upgrade; validation
+confirmed the two things that matter for a telemetry assistant — a real question gets a cited
+answer, and an out-of-corpus question ("*what's the capital of France?*") gets a refusal, not a
+confabulation. The pipe wasn't just connected; now it's something you talk to.

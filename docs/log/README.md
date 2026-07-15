@@ -3,6 +3,13 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The memory moves its thinking to the muscle](2026-07-fleet-memory-gpu.md): the
+  local "ask the fleet about its own logs" chat generated its answers slowly, on a GPU-less board.
+  This routes only the *writing* of the answer to the summoned basement GPU while retrieval stays on
+  the always-on node — 7–8× faster. A benchmark overruled the premise: the bigger model doesn't fit
+  the card's 4 GB (it spills to CPU and answers worse), so the win is a fully-GPU-resident *small*
+  model, not a bigger one. Written as prefer-then-fall-back so a GPU that won't wake makes the answer
+  slower, never failed — which quietly makes "is its work getting done?" monitoring the next thing owed.
 - **2026-07** — [One die, many doors](2026-07-dashboard-consolidation.md): dashboard drift, cured
   structurally. The engine's native library panels can't be file-provisioned, so shared panels are
   build-time *stamped* from canonical sources by a tiny committed generator; the topology board

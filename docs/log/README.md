@@ -3,6 +3,15 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The room with two guards and no captain](2026-07-embassy-sidecar.md): the off-fleet
+  cloud box that watches the fleet from outside every failure domain finally became load-bearing —
+  the TLS front and the watcher folded into one pod described by a portable Kubernetes spec, the
+  gateway's heartbeat cut over to ping it for real, and the watcher taught to check in on *itself*.
+  The pod adopted its old data volumes untouched (the certificate's serial never changed), but killing
+  the watcher container proved the sharp lesson: a played pod spec is *not* a cluster — the
+  single-host engine honors the spec's shape and not its supervision, so `restartPolicy` and its
+  cousins are inert and a crashed watcher is caught by a *page*, not a self-heal. The proof: one
+  induced silence, two independent alarms from two independent paths, healed by a single ping.
 - **2026-07** — [The memory moves its thinking to the muscle](2026-07-fleet-memory-gpu.md): the
   local "ask the fleet about its own logs" chat generated its answers slowly, on a GPU-less board.
   This routes only the *writing* of the answer to the summoned basement GPU while retrieval stays on

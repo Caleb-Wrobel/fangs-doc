@@ -42,6 +42,13 @@ Still on its list:
 
 ## Things to actually noodle on
 
+- **Git as the fleet's nervous system.** Now that the true git source lives *on* the fleet (see
+  [Bringing the origin home](log/2026-07-fangs-git-origin.md)), a family of ideas gets cheap: pushing
+  in-flight branches so the memory can reason about *unshipped* work, not just landed main; a heavier
+  local clone on the GPU node for on-device search; a real self-hosted web forge (web UI, PRs, issues);
+  and the far-off north star — the fleet applying *itself* from its own git instead of a human running
+  the playbook (push-config → pull-gitops). Each is a possible standalone piece; it only becomes a
+  *direction* worth naming once two or three of them actually form. Deliberately unchartered for now.
 - **Small-screen kiosk legibility.** On the 7″ 800×480 wall panel the dashboards fall
   back to a cramped single-column layout with oversized stat text. The first lever
   tried — a browser device-scale flag — *ran cleanly but did the wrong thing*: under
@@ -79,6 +86,12 @@ Still on its list:
 
 ## Done recently
 
+- ✅ The fleet's git source of truth, brought in-house: the NAS is now the **authoritative git origin**
+  (a bare repo served over its own SSH by a `git-shell`-confined service account), with GitHub demoted
+  to an offsite **backup** that can only ever add refs, never delete them. The AI/data node's mirror —
+  which the memory tools read — now pulls from an always-current LAN source, **read-only by
+  construction** (a forced fetch-only command; proven it can pull and cannot push), instead of depending
+  on a human pushing to a third party ([log](log/2026-07-fangs-git-origin.md)).
 - ✅ RAG over the fleet's own telemetry: a local command-line tool that embeds the **notable**
   log lines the cluster already collects into the pgvector store, then answers plain-English
   questions — *"what's been failing on the NAS?"* — grounded in the retrieved logs, with

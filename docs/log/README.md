@@ -3,6 +3,16 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [Bringing the origin home](2026-07-fangs-git-origin.md): the fleet's git source of
+  truth was off-site — the memory tools all read a mirror that only reflected what a human had pushed
+  to GitHub. This makes the **NAS the authoritative git origin** (a bare repo served over its own SSH
+  by a `git-shell`-confined account) and demotes GitHub to a best-effort **backup** that can only ever
+  add refs, never delete them. Two keys, two authorities: the workstation reads/writes; the AI/data
+  node is read-only *by construction* (a forced fetch-only command — proven it can pull and cannot
+  push). Three cutover bugs off the happy path — the first fleet role to *become* a locked-down user
+  needed an ACL tool nobody had installed; a shared address that only resolved on the serving side; and
+  a dry-run that lied about being converged — plus the permanent small lesson: when you've just moved
+  where `origin` points, run `git remote -v` before you push.
 - **2026-07** — [The room with two guards and no captain](2026-07-embassy-sidecar.md): the off-fleet
   cloud box that watches the fleet from outside every failure domain finally became load-bearing —
   the TLS front and the watcher folded into one pod described by a portable Kubernetes spec, the

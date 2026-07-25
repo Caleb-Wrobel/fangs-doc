@@ -47,9 +47,12 @@ flat, trusted LAN.
 
 One more piece sits *outside* the LAN entirely: a minimal cloud watcher, on the
 free tier of a public cloud provider, whose only job is to notice if the whole
-house goes dark. A watcher that reports through the thing it watches isn't a
-watcher, so this one lives outside every failure domain the fleet has and
-reports out over its own path — the fleet's one deliberate, minimal cloud
+house goes dark. It's a dead-man's switch, not a poller: the gateway pushes it
+a periodic heartbeat over its normal outbound-only egress, and the watcher
+pages out on its own path if that heartbeat ever stops — nothing about it
+reaches back into the LAN. A watcher that reports through the thing it watches
+isn't a watcher, so this one lives outside every failure domain the fleet has
+and reports out over its own path — the fleet's one deliberate, minimal cloud
 dependency, and it exists specifically so the *rest* of the system doesn't need
 one.
 

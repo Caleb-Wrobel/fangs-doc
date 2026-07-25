@@ -21,7 +21,7 @@ graph TD
     SW --- MOREL["morel — amd64 · GTX 970<br/>batch · GPU inference<br/>sleeps in S3, WoL-summoned"]
     AUXIN -.->|"Wake-on-LAN"| MOREL
     WATCHER(["off-fleet watcher<br/>public cloud, free tier"])
-    NET -.->|"watches from outside — never routed through limen"| WATCHER
+    LIMEN -.->|"heartbeat, egress-only — no inbound path back in"| WATCHER
     WATCHER -.->|"pages out independently"| NET
 ```
 
@@ -36,13 +36,14 @@ all — see *watching from outside*, below.
 Every alerting layer inside the LAN shares one weakness: if the gateway itself
 goes dark, so does its ability to say so. The fix isn't a bigger alerting stack
 on the gateway — it's a second, independent witness that lives entirely outside
-the house's network and power. A minimal instance on a public cloud provider's
-free tier polls the fleet from the outside and pages out over its own path if
-the fleet stops answering, and a third-party uptime pinger checks on *that*
-watcher in turn, so no single link in the chain is un-watched. It is
-deliberately as small and stateless as possible: the moment it needs deep
-observability of its own, that's a sign it has taken on too much and stopped
-being a watcher.
+the house's network and power. It works as a dead-man's switch, not a poller:
+the gateway pushes it a periodic heartbeat over its own outbound-only egress —
+nothing reaches back in, so the fail-closed WAN posture above holds unchanged —
+and the watcher pages out over its own path if that heartbeat ever stops
+arriving. A third-party uptime pinger checks on *that* watcher in turn, so no
+single link in the chain is un-watched. It is deliberately as small and
+stateless as possible: the moment it needs deep observability of its own,
+that's a sign it has taken on too much and stopped being a watcher.
 
 ## Design principles
 

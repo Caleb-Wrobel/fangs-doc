@@ -111,7 +111,7 @@ and one amd64 box — plus one node deliberately outside the LAN entirely:
 | kiosk       | observability wall | a Grafana kiosk on a touchscreen, rendering the gateway's dashboards |
 | AI / data   | local AI + data    | LLM inference + a chat UI, and a Postgres + pgvector data layer |
 | batch / GPU | summoned muscle    | GPU inference, woken on demand by Wake-on-LAN and asleep otherwise |
-| off-fleet watcher | outside witness | a minimal public-cloud instance that notices if the whole LAN goes dark; shares no failure domain with it |
+| off-fleet watcher | outside witness | a minimal public-cloud instance that accepts a heartbeat *pushed out* by the gateway (egress-only, no inbound path) and pages if it stops arriving |
 
 Only the gateway touches the WAN; the others are peers behind it. The security
 boundary that matters is the WAN edge, not host-to-host — the docs call this

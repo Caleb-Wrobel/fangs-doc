@@ -101,7 +101,8 @@ Start at the [home page](index.md) for the human framing. Then:
 
 ## The fleet at a glance (roles, never addresses)
 
-Five nodes on a flat, trusted LAN behind one gateway — four single-board computers and one amd64 box:
+Five nodes on a flat, trusted LAN behind one gateway — four single-board computers
+and one amd64 box — plus one node deliberately outside the LAN entirely:
 
 | Node        | Role               | Carries (conceptually)                                  |
 |-------------|--------------------|---------------------------------------------------------|
@@ -110,11 +111,14 @@ Five nodes on a flat, trusted LAN behind one gateway — four single-board compu
 | kiosk       | observability wall | a Grafana kiosk on a touchscreen, rendering the gateway's dashboards |
 | AI / data   | local AI + data    | LLM inference + a chat UI, and a Postgres + pgvector data layer |
 | batch / GPU | summoned muscle    | GPU inference, woken on demand by Wake-on-LAN and asleep otherwise |
+| off-fleet watcher | outside witness | a minimal public-cloud instance that notices if the whole LAN goes dark; shares no failure domain with it |
 
 Only the gateway touches the WAN; the others are peers behind it. The security
 boundary that matters is the WAN edge, not host-to-host — the docs call this
 "visibility over least-privilege inside the LAN." (The repo uses the wolf hostnames
-as labels; their *addresses* are intentionally absent.)
+as labels; their *addresses* are intentionally absent.) The off-fleet watcher is
+not behind the gateway and not a peer of the other five — it is structurally
+outside the LAN on purpose, so it can still speak when the LAN can't.
 
 ## Freshness
 

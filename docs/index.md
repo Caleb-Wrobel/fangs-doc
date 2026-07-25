@@ -17,11 +17,13 @@ The Ansible that actually configures the fleet lives in a separate private repo.
 
 fangs is a homelab built to *learn the whole stack by owning it* — to replace the
 black boxes of a home network with parts I configured myself and understand all
-the way down. It's a handful of cheap single-board computers that together do the
-job of a commercial router, a NAS, and a monitoring appliance: its own gateway and
+the way down. It's a handful of small, cheap machines that together do the job of
+a commercial router, a NAS, and a monitoring appliance: its own gateway and
 firewall, its own DNS, its own VPN egress, its own internal certificate authority,
-and its own metrics-and-logs stack. Nothing depends on a cloud account; the only
-thing it asks of the outside world is an internet handoff.
+and its own metrics-and-logs stack. The home LAN core is entirely self-hosted;
+the one deliberate exception is a minimal off-fleet cloud watcher (below) whose
+whole job is noticing when the house itself goes dark — a witness has to stand
+outside what it's watching.
 
 The constraint is half the fun. Most of it runs on modest ARM boards — with one amd64 workhorse for the heavy lifting — every node
 is described in code and reproducible from a wiped SD card, and the rule of thumb
@@ -40,6 +42,16 @@ the pieces fit, what broke on the way, and what I'm thinking about building next
 
 `limen` is the only node on the WAN edge; everything else sits behind it on a
 flat, trusted LAN.
+
+## Watching from outside
+
+One more piece sits *outside* the LAN entirely: a minimal cloud watcher, on the
+free tier of a public cloud provider, whose only job is to notice if the whole
+house goes dark. A watcher that reports through the thing it watches isn't a
+watcher, so this one lives outside every failure domain the fleet has and
+reports out over its own path — the fleet's one deliberate, minimal cloud
+dependency, and it exists specifically so the *rest* of the system doesn't need
+one.
 
 ## How to read this
 

@@ -2,9 +2,10 @@
 
 fangs is a five-node cluster — four Raspberry Pis plus one amd64 workhorse — that
 behaves like a miniature, fully self-hosted network: its own gateway, its own DNS, its own VPN egress, its own
-internal certificate authority, and its own observability stack. Nothing here
-depends on a cloud provider; the only upstream dependency is a residential
-internet handoff.
+internal certificate authority, and its own observability stack. The LAN core has
+one upstream dependency, a residential internet handoff, and one deliberate cloud
+exception: a minimal off-fleet watcher (see below) whose entire purpose is to
+notice when the fleet itself goes dark.
 
 ## Shape of the system
 
@@ -19,11 +20,29 @@ graph TD
     SW --- AUXIN["auxin — Pi 5<br/>local AI · Postgres data layer"]
     SW --- MOREL["morel — amd64 · GTX 970<br/>batch · GPU inference<br/>sleeps in S3, WoL-summoned"]
     AUXIN -.->|"Wake-on-LAN"| MOREL
+    WATCHER(["off-fleet watcher<br/>public cloud, free tier"])
+    NET -.->|"watches from outside — never routed through limen"| WATCHER
+    WATCHER -.->|"pages out independently"| NET
 ```
 
 Only `limen` touches the WAN. The others are peers on a single flat LAN —
 deliberately trusted, because the security boundary that matters is the WAN edge,
-not host-to-host. (See *design principles* below.)
+not host-to-host. (See *design principles* below.) The off-fleet watcher is
+deliberately drawn separate: it shares no failure domain with the LAN side at
+all — see *watching from outside*, below.
+
+## Watching from outside
+
+Every alerting layer inside the LAN shares one weakness: if the gateway itself
+goes dark, so does its ability to say so. The fix isn't a bigger alerting stack
+on the gateway — it's a second, independent witness that lives entirely outside
+the house's network and power. A minimal instance on a public cloud provider's
+free tier polls the fleet from the outside and pages out over its own path if
+the fleet stops answering, and a third-party uptime pinger checks on *that*
+watcher in turn, so no single link in the chain is un-watched. It is
+deliberately as small and stateless as possible: the moment it needs deep
+observability of its own, that's a sign it has taken on too much and stopped
+being a watcher.
 
 ## Design principles
 
@@ -63,4 +82,10 @@ Dependencies dictate sequence, not preference:
 1. **Gateway** — networking foundation everything else needs.
 2. **NAS / caching** — storage and the package/image caches that speed up the rest.
 3. **Observability** — last, so there are already targets to scrape and logs to ship.
-4. **Free agent** — role still being decided.
+4. **Local AI / data layer** — found its role: on-device LLM inference plus a
+   Postgres + pgvector data layer (see [Local AI](local-ai.md) and
+   [Data layer](data-layer.md)).
+5. **Batch / GPU** — joined later as summoned muscle, sleeping until woken by
+   Wake-on-LAN from the data-layer node.
+6. **Off-fleet watcher** — added last and deliberately independent of the build
+   order above; it doesn't depend on the fleet, the fleet depends on it existing.

@@ -4,6 +4,8 @@ site_url: https://caleb-wrobel.github.io/fangs-doc/
 repo_url: https://github.com/Caleb-Wrobel/fangs-doc
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
   palette:
     - scheme: default
       primary: indigo

@@ -54,6 +54,7 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - The Switch Nobody Flipped: log/2026-07-gateway-rtc.md
       - The Room With Two Guards and No Captain: log/2026-07-embassy-sidecar.md
       - The Memory Moves to the Muscle: log/2026-07-fleet-memory-gpu.md
       - One Die, Many Doors: log/2026-07-dashboard-consolidation.md

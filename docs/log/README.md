@@ -3,6 +3,16 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The switch nobody flipped](2026-07-gateway-rtc.md): fitting the gateway node
+  with a battery-backed real-time clock, so it can keep accurate time across a cold boot with no
+  network — and three rounds of false-positive "it works" readings before the real test caught the
+  fault. Every quick check available lied for a different reason: the clock utility wasn't even
+  installed, the RTC device file exists whether or not a battery is attached, and a clean shutdown
+  never actually removes the power the clock domain was riding on. The test that finally worked
+  reads the battery rail directly and checks what the RTC hardware itself reports at the very first
+  instant of boot, before NTP gets a chance to paper over the answer. A detour into cell-chemistry
+  research confirmed the right part was already fitted — so the fault was neither wiring nor
+  chemistry, just a switch molded into the battery holder, left off since day one.
 - **2026-07** — [Bringing the origin home](2026-07-fangs-git-origin.md): the fleet's git source of
   truth was off-site — the memory tools all read a mirror that only reflected what a human had pushed
   to GitHub. This makes the **NAS the authoritative git origin** (a bare repo served over its own SSH

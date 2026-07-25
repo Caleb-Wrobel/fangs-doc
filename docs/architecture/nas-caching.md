@@ -94,10 +94,11 @@ How it's run is itself a small statement of the fleet's container conventions:
 - **Blobs on the HDD.** Image layers go to the external drive, not the SD card —
   same reasoning as everything else here.
 
-> **Honest status:** the registry currently runs **open on the trusted LAN** — no
-> authentication yet. That's consistent with the fleet's inside-the-LAN posture
-> (visibility over isolation), but it's flagged on the [roadmap](../roadmap.md) to
-> get credentials before it carries anything that matters.
+**Authentication:** the registry requires a fleet-CA **client certificate** at the
+reverse proxy (mTLS) — a request with no cert never completes the TLS handshake,
+let alone reaches Zot itself. Machine identity, not a login form, matching how
+node-to-node access is authenticated elsewhere in the fleet. See
+[TLS & reverse proxy](tls-proxy.md).
 
 ## Nightly log backup
 

@@ -8,8 +8,6 @@ the ideas worth chewing on while away from the keyboard.
 - **Auth gate in front of the reverse proxy.** Today services rely on their own
   auth behind the proxy. A single sign-on / forward-auth layer at the proxy would
   let new services be protected by default instead of each rolling their own.
-- **Registry authentication.** The internal image registry currently runs open on
-  the trusted LAN. Add credentials before it carries anything that matters.
 - **Document the dry-run convention.** Two of this thread's three parts have landed:
   **`ansible-lint`** is enforced (a pinned `production` profile plus a pre-commit gate),
   and the fleet has passed a **zero-changes idempotency baseline** (bar two documented
@@ -86,6 +84,42 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **Registry authentication** (the item that used to sit above, in "near-term") — the local
+  image registry now requires a fleet-CA **client certificate** per node (mTLS at the reverse
+  proxy) instead of running open on the trusted LAN; a request with no cert never completes the
+  TLS handshake at all. Machine identity, not a login form — matching how everything else here
+  authenticates node-to-node.
+- ✅ A witness that watches from outside every failure domain the fleet has: a minimal instance
+  on a public cloud provider's free tier, reachable only by its own public name, accepts a
+  heartbeat the gateway pushes out over its normal egress and pages independently if that
+  heartbeat ever stops — with a third-party uptime check watching *that* watcher in turn. It only
+  became load-bearing once its TLS front and its own watch-itself logic were folded into one
+  portable pod spec; killing the watcher container to prove the point surfaced the sharp
+  lesson that a played pod spec isn't a cluster — a single crash needs a page, not a self-heal
+  ([log](log/2026-07-embassy-sidecar.md)).
+- ✅ Dashboard drift, cured structurally: shared panels across every board are now stamped at
+  build time from one canonical source instead of hand-copied, so a fix lands everywhere at
+  once. Four new boards landed alongside it (services, storage, links, DNS), and the topology
+  board learned that a sleeping node is not a dead one ([log](log/2026-07-dashboard-consolidation.md)).
+- ✅ Network-layer visibility on the gateway, the repo's oldest open promise: passive traffic
+  transcription (not inspection) on the LAN bridge, logged and queryable beside everything else.
+  Paid for itself within hours, catching an un-telemetried device on the network and a kiosk
+  browser quietly phoning home far more than expected
+  ([log](log/2026-07-zeek-flow-visibility.md)).
+- ✅ A fifth node joined as **summoned muscle**: an aging amd64 desktop with a GPU, asleep in
+  suspend-to-RAM until woken by a Wake-on-LAN packet from the AI/data node (~6 s round trip,
+  memory preserved). The first non-Pi, non-ARM member surfaced a genuinely new monitoring
+  question — a node *designed* to be off looks identical to a dead one, so uptime alone can't be
+  the health signal for it ([log](log/2026-07-morel-wake-work-sleep.md)).
+- ✅ A third noun for the feature pipeline: **themes**, standing cross-cutting concerns
+  (`persistence`, `security`, …) that never finish, sitting orthogonal to the epic → feature
+  hierarchy that actually ships things. The point is two machine-answerable questions: what's
+  open toward a given theme, and what's already been done under it when something breaks
+  ([log](log/2026-07-workflow-themes.md)).
+- ✅ The fleet's first multi-part *epic*: a chaos-engineering harness that injects known,
+  self-reverting faults into two leaf nodes only (never the gateway or the AI/data node) to
+  prove alerts actually fire and nodes actually recover — treating a blind spot ("broke it,
+  nothing paged") as a first-class finding, not a footnote ([log](log/2026-06-chaos-stack.md)).
 - ✅ The fleet's git source of truth, brought in-house: the NAS is now the **authoritative git origin**
   (a bare repo served over its own SSH by a `git-shell`-confined service account), with GitHub demoted
   to an offsite **backup** that can only ever add refs, never delete them. The AI/data node's mirror —

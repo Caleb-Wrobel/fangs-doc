@@ -84,6 +84,19 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **Key-only SSH across the fleet** — the shared login password is gone from the network. It was
+  a second, never-rotated path into an account that is root in all but name, on every node, while a
+  comment in the code claimed the opposite had been true for months. Now enforced rather than
+  assumed, with a randomized console-only password left behind so a hands-on recovery visit is still
+  possible. First piece of a new **credential-hygiene** effort whose organizing idea is that rotation
+  is the *fallback* — prefer removing a credential, or making it expire on its own, over building
+  something to rotate it ([log](log/2026-07-key-only-ssh.md)).
+- ✅ A full-fleet convergence run, and the three bugs it surfaced — a wedged package upgrade that
+  broke *silently* (service still serving, health green, nothing paged) while stopping the whole
+  fleet from converging; a passwordless-sudo rule that was root-only by omission, hidden for months
+  behind a guard that meant the task never ran; and two tasks on the GPU node that had been undoing
+  each other every single run, rebuilding kernel modules from source each time
+  ([log](log/2026-07-convergence-audit.md)).
 - ✅ **Registry authentication** (the item that used to sit above, in "near-term") — the local
   image registry now requires a fleet-CA **client certificate** per node (mTLS at the reverse
   proxy) instead of running open on the trusted LAN; a request with no cert never completes the

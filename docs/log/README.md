@@ -3,6 +3,32 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [Three bugs behind a green run](2026-07-convergence-audit.md): running the
+  *whole* configuration playbook against the *whole* fleet — something a workflow built on narrow,
+  fast, tagged slices almost never does. The run found a blocker; the routine dry run *afterwards*
+  found the two real bugs. A dashboard package upgrade wedged because its post-install step moves a
+  directory onto what is now a separate disk and the destination already existed — and it broke
+  **silently**: the old binary kept serving, health returned 200, nothing paged, while one wedged
+  package in the first play stopped the entire fleet converging. A passwordless-sudo rule written
+  without a run-as clause meant *root only*, so escalating to the locked-down git account had always
+  demanded a password — hidden for months because a create-if-missing guard meant the task never did
+  work, so nobody noticed it never could. And on the GPU node, two tasks were undoing each other every
+  run: the vendor ships the same package names the purge step removes, so ~150 packages churned and
+  the kernel module rebuilt from source, every run, forever. The keeper: hold the "a converged fleet
+  reports zero changes" bar and mean it — a stubborn changed line is not cosmetic drift.
+- **2026-07** — [The claim the code never made](2026-07-key-only-ssh.md): a survey of open-source
+  credential-rotation options that ended somewhere else — the fleet's biggest exposure needed no
+  rotation machinery at all. A comment justifying passwordless `sudo` asserted the admin account
+  "reaches every node over key-only SSH"; nothing had ever enforced it, and every node was in fact
+  still accepting passwords. The reframe that came out of it: **rotation is the fallback, not the
+  goal** — eliminate the credential, or make it expire unattended, before you build something to
+  rotate it on a schedule; and name the third of any vault that *nothing* can rotate (third-party
+  bearer tokens with no API), because tools that claim to "rotate your secrets" quietly ignore them.
+  Three sharp edges: the hardening file's *number* is load-bearing (first-match-wins, lexical order),
+  disabling password auth does nothing if keyboard-interactive is left to reopen the same door through
+  PAM, and the account gets a random password rather than being locked — because with network logins
+  gone, that password is the only way back in at a physical console, and one node is already known to
+  need hands-on visits.
 - **2026-07** — [The switch nobody flipped](2026-07-gateway-rtc.md): fitting the gateway node
   with a battery-backed real-time clock, so it can keep accurate time across a cold boot with no
   network — and three rounds of false-positive "it works" readings before the real test caught the

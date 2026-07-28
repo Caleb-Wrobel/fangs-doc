@@ -3,6 +3,19 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The locked door beside the open one](2026-07-secrets-at-rest.md): two
+  third-party API keys were sitting in plaintext inside the nightly database backups, because the
+  application storing them doesn't encrypt config values and a binary dump format is compression,
+  not encryption. The plan was to move the backup directory out of the password-protected file
+  share — until measuring found a **second** export serving the same tree with **no credential at
+  all**, making the share I meant to fix the *stronger* of two doors. Fixing only it would have
+  closed nothing while feeling like completion. The eventual fix was cheaper as well as broader:
+  the drive root held no user data at all, so both shares were re-scoped to an empty subdirectory
+  and nothing moved. Dumps are now encrypted to a key whose private half is deliberately absent
+  from the machine holding them, the restore was proven by **row count** rather than exit code, and
+  rotation was deliberately sequenced *last* — because nothing un-exposes what's already written,
+  and rotation is the only real revocation. The keeper: enumerate every protocol serving a path,
+  and find the version of a check that fails today instead of in two weeks.
 - **2026-07** — [Three bugs behind a green run](2026-07-convergence-audit.md): running the
   *whole* configuration playbook against the *whole* fleet — something a workflow built on narrow,
   fast, tagged slices almost never does. The run found a blocker; the routine dry run *afterwards*

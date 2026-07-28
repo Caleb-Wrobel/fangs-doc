@@ -58,6 +58,27 @@ Both are scoped to the **LAN only** — exports and host-allow rules are limited
 the local subnet plus loopback. cream sits behind the gateway and is never
 WAN-facing, so sharing is an inside-the-house convenience, not an exposure.
 
+**Both serve a dedicated subdirectory, never the drive root.** This is the
+important part, and it was learned the hard way — see
+[the locked door beside the open one](../log/2026-07-secrets-at-rest.md). The drive
+root holds only *service* state: database backups, the log archive, the container
+registry, the package cache, and the fleet's own git origin. None of it is user
+data, and none of it belongs to anyone mounting a file share. Sharing the root
+handed all of it to any share client at once.
+
+The asymmetry between the two protocols is the reason this matters more than it
+looks. Samba authenticates a user; NFS under the default security flavour lets the
+*client* assert who it is, squashing only the root account. So the unauthenticated
+export was the weaker of the two — reachable with no credential at all — while the
+password on the other one drew all the attention. **Scope both to the same narrow
+subdirectory, and treat "which protocols serve this path?" as the first question of
+any exposure review, not the last.**
+
+One trap worth naming for anyone doing the same narrowing: fix it with a *new*
+variable for the shared subdirectory. The variable holding the drive's mount
+location is embedded in the fleet git origin's URL and read across hosts, so
+editing that one to re-scope a share would silently repoint the git remote.
+
 ## Package cache
 
 Every node's apt traffic can be pointed at an **apt-cacher-ng** proxy running here.

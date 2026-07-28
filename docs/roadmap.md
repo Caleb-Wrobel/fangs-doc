@@ -84,6 +84,16 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **Backups encrypted at rest, and the shares narrowed** — two third-party API keys were sitting
+  in plaintext inside the nightly database backups, reachable over the network. The dumps are now
+  encrypted to a key whose private half is deliberately *not* on the machine that stores them, so
+  the storage node writes backups it cannot read; the restore was proven end-to-end by comparing
+  row counts, not by trusting an exit code. The bigger finding was that the file share everyone
+  worries about was the *stronger* of two doors — a second, unauthenticated export served the same
+  tree — so both were re-scoped to a dedicated subdirectory instead of the drive root, which turned
+  out to require moving no data at all. Both keys were then rotated at their sources and the old
+  plaintext backups destroyed, in that order, because rotation is the only real revocation. Second
+  piece of the **credential-hygiene** effort ([log](log/2026-07-secrets-at-rest.md)).
 - ✅ **Key-only SSH across the fleet** — the shared login password is gone from the network. It was
   a second, never-rotated path into an account that is root in all but name, on every node, while a
   comment in the code claimed the opposite had been true for months. Now enforced rather than

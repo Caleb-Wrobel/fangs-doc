@@ -84,6 +84,15 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **Six placeholder credentials replaced** — the file-share password, the dashboard admin
+  password and four database role passwords were all still the literal placeholder string from the
+  example secrets file. Never weak exactly; never *chosen*. All six are now real random values,
+  verified at the server by logging in with the new one and confirming the old one is refused. The
+  useful part was the discovery that **none of them rotated by editing the stored value** — every
+  one needed a separate imperative command, and the dashboard server's rotation reported success
+  while changing nothing at all. That finding is now the requirements document for the rotation
+  engine, which has to record rotations it *verified* rather than ones a green run believes it
+  performed ([log](log/2026-07-credential-rotation.md)).
 - ✅ **Backups encrypted at rest, and the shares narrowed** — two third-party API keys were sitting
   in plaintext inside the nightly database backups, reachable over the network. The dumps are now
   encrypted to a key whose private half is deliberately *not* on the machine that stores them, so

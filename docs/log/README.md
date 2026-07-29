@@ -3,6 +3,18 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-07** — [The rotation that rotated nothing](2026-07-credential-rotation.md): six live
+  credentials were the literal placeholder string from the example secrets file — never weak, never
+  *chosen*. Replacing them was meant to be an afternoon of typing, and instead became the
+  requirements document for the rotation engine, because **not one of the six rotated the way the
+  configuration management implied.** Guarded "create if absent" statements, an environment variable
+  read only at first initialization, an idempotence check that by design can never run twice: every
+  guard correct, and collectively a system that can express "this credential should exist" but not
+  "this credential should now be different." The centrepiece is the dashboard server, which rewrote
+  its config, restarted, reported the task changed — and kept accepting the old password (new → 401,
+  old → 200), with nothing in a green idempotent run able to tell those states apart. The keeper: a
+  run reporting "changed" is evidence a *file* changed, not that the *world* did — so verify the
+  credential, and require the old one to fail.
 - **2026-07** — [The locked door beside the open one](2026-07-secrets-at-rest.md): two
   third-party API keys were sitting in plaintext inside the nightly database backups, because the
   application storing them doesn't encrypt config values and a binary dump format is compression,

@@ -30,11 +30,12 @@ instead of on a cloud API.
 
 Still on its list:
 
-- ✅ **Reach it from the open internet** — shipped as a **self-hosted WireGuard road-warrior** on
-  the gateway (2026-07-08). The zero-inbound-port ideal (an overlay/mesh) was **ruled out** — the
-  egress VPN's built-in mesh force-enables a vendor firewall that breaks LAN DHCP (see the
-  [remote-access log](log/2026-06-remote-access.md)) — so the road-warrior won, accepting one inbound
-  UDP port as the price. Split-tunnel, DNS over the gateway's resolver; it replaces the interim SSH tunnel.
+- ✅ **Reach it from the open internet** — shipped as a self-hosted WireGuard road-warrior on
+  the gateway (2026-07-08), then **redesigned (2026-08-20)** so the gateway no longer accepts any
+  inbound connection for this at all — the zero-inbound-port ideal, reached a different way than
+  first planned. The off-fleet watcher box (fixed address) is now the one fixed point everything
+  dials out to, gateway included; see the [build log](log/2026-08-wireguard-hub.md). Split-tunnel,
+  DNS over the gateway's resolver, unchanged.
 - **Authentication on the raw inference API** — the chat UI has its own login; the API itself
   is currently open on the trusted LAN.
 
@@ -202,8 +203,14 @@ Still on its list:
   way ([log](log/2026-06-local-coding-agent.md)).
 - ✅ Decided **and built** the off-LAN access story: ruled out the egress VPN's built-in mesh (it
   force-enables a DHCP-breaking vendor firewall), and landed a self-hosted WireGuard road-warrior
-  (split-tunnel, one inbound UDP port) on 2026-07-08, replacing the interim SSH tunnel
-  ([log](log/2026-06-remote-access.md)).
+  (split-tunnel) on 2026-07-08, replacing the interim SSH tunnel ([log](log/2026-06-remote-access.md)).
+  Redesigned 2026-08-20 so the gateway carries **zero** inbound ports for this — see below.
+- ✅ Flipped who has to be found for the road-warrior tunnel: the gateway's own address on the
+  wider internet drifts (nothing tracked it, and it had already gone stale once), so the gateway
+  now dials *out* to the off-fleet watcher box's fixed address instead of accepting inbound
+  connections — a net **reduction** in the gateway's attack surface, proven from a genuinely
+  external network (cellular, not home WiFi) after one honestly-corrected misdiagnosis along the
+  way ([log](log/2026-08-wireguard-hub.md)).
 - ✅ Local AI inference on the free-agent node: small LLMs (general / coding / fast /
   embeddings) with a browser chat front-end, fronted by the proxy and reachable from the
   laptop over an SSH tunnel ([log](log/2026-06-local-ai.md)).

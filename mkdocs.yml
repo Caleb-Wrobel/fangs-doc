@@ -56,6 +56,7 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - The Road That Never Left the House: log/2026-08-wireguard-hub.md
       - The Rotation That Rotated Nothing: log/2026-07-credential-rotation.md
       - The Locked Door Beside the Open One: log/2026-07-secrets-at-rest.md
       - Three Bugs Behind a Green Run: log/2026-07-convergence-audit.md

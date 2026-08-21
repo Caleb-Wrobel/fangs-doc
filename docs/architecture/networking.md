@@ -91,9 +91,13 @@ filtering policy from outside, violating the principle that the firewall owns th
 policy in one place. (The full story is in the
 [remote-access build log](../log/2026-06-remote-access.md).)
 
-That build now exists: a **self-hosted WireGuard road-warrior** on the gateway (landed
-2026-07-08). The vendor firewall stays off and the kill-switch-in-the-firewall model stays
-intact; the cost is a single inbound UDP port, which WireGuard keeps invisible by never
-answering an unauthenticated packet. It's **split-tunnel** — a client off the LAN reaches the
-fleet by name (DNS resolved by the gateway's own resolver) while ordinary traffic stays on the
-client's own upstream, so remote access doesn't drag everything through the egress VPN.
+That build now exists: a **self-hosted WireGuard road-warrior**, landed on the gateway
+2026-07-08 and **redesigned 2026-08-20** so the gateway is no longer the one accepting inbound
+connections at all. The off-fleet watcher box (a small always-reachable cloud presence, fixed
+address) is the one point everything dials *out* to now — every client, the gateway included —
+which means the gateway carries **zero** inbound ports for this rather than one. The vendor
+firewall stays off and the kill-switch-in-the-firewall model stays intact throughout. It's still
+**split-tunnel** — a client reaches the fleet by name (DNS resolved by the gateway's own
+resolver, relayed the same way) while ordinary traffic stays on the client's own upstream, so
+remote access doesn't drag everything through the egress VPN. See the
+[build log](../log/2026-08-wireguard-hub.md) for the redesign itself.

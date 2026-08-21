@@ -3,6 +3,18 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-08** — [The road that never left the house](2026-08-wireguard-hub.md): the off-fleet
+  watcher box came back for a different reason — the gateway's own address on the wider internet
+  drifts, and nothing had ever tracked it. The fix flips who has to be found: every device,
+  gateway included, now dials *out* to the box's fixed address instead of anyone dialing in to the
+  gateway, which nets the gateway a **smaller** attack surface, not a bigger one. Three real bugs
+  on the way — a network manager that was never running, a private key stored under a name that
+  collided with a more generic one and silently stole an identity, a route nobody actually wrote —
+  and one mistake corrected in public: a symptom on my own laptop, at home, looked identical to a
+  provider issue I'd diagnosed once before, and I said so with more confidence than I'd earned. It
+  was a loop through my own router, never the provider, and someone else in the house caught it.
+  The real proof came from a phone on cellular data, nowhere near the house, loading a dashboard
+  on the first try.
 - **2026-07** — [The rotation that rotated nothing](2026-07-credential-rotation.md): six live
   credentials were the literal placeholder string from the example secrets file — never weak, never
   *chosen*. Replacing them was meant to be an afternoon of typing, and instead became the

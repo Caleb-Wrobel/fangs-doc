@@ -136,11 +136,25 @@ the plain, mundane thing of checking on the house from somewhere that is genuine
 It's also, satisfyingly, a cleaner test than the one I got wrong: cellular data never comes near
 the home router at all, so there's no loop to mistake for a wire.
 
-## What's still open
+## Addendum — 2026-08-22: back on the free tier
 
-The relay box is now also home to a small patient script, running on the always-on node, making
-one attempt every few minutes to claim a second free-tier cloud slot on a different provider — a
-better one, when it's available, which it usually isn't; demand for the free tier of that
-particular hardware shape outstrips supply most of the time. It costs nothing to leave running: a
-failed attempt there doesn't touch anything that already works, and a successful one is pure
-upside. It's been trying, politely, in the background this whole time, and hasn't landed yet.
+The paid box didn't stay in the job long. Two days after this went live, the relay moved a third
+time — off the paid provider entirely and back onto the free tier, into the second of two
+free-forever slots of the relay's original shape that the account has always been entitled to
+(only one had ever been claimed). Same self-written service, same behavioral contract, nothing
+lost in the move. The paid box was decommissioned outright, not kept running as a spare. As of
+this writing, the relay runs on free-tier capacity, full stop — that is the current, authoritative
+state, not the paid-box arrangement described above.
+
+Also worth flagging here, since it's the same account: a second, separate free-tier claim — a
+different, more capable hardware shape, chased opportunistically in the background this whole
+time by a small patient script that made one attempt every few minutes — eventually succeeded.
+That box sits fully provisioned and idle, ready and waiting for a job. Worth its own entry once it
+gets one.
+
+## Addendum: the paid provider isn't off the table for good
+
+Retiring the paid box from this particular job doesn't rule paid capacity out for the fleet more
+broadly — there's still credit sitting unused with that provider, and it remains a live option for
+whatever needs paid compute or bandwidth next. It's simply not backing anything right now, and
+the free tier's generous headroom means there's no pressing reason to reach for it.

@@ -56,6 +56,10 @@ nav:
       - TLS Proxy: architecture/tls-proxy.md
   - Build Log:
       - Index: log/README.md
+      - A Spry Little Forge: log/2026-08-forgejo-spike.md
+      - The Couch Learns to Read: log/2026-08-couch-room-redesign.md
+      - What Counts as Drifted: log/2026-08-drift-check.md
+      - The Watchdog That Watched the Wrong Door: log/2026-08-drive-watchdog-mount-race.md
       - The Road That Never Left the House: log/2026-08-wireguard-hub.md
       - The Rotation That Rotated Nothing: log/2026-07-credential-rotation.md
       - The Locked Door Beside the Open One: log/2026-07-secrets-at-rest.md
@@ -73,6 +77,7 @@ nav:
       - The Trust That Was Not: log/2026-07-internal-tls-trust.md
       - Workflow Themes: log/2026-07-workflow-themes.md
       - Scale to Zero: log/2026-07-scale-to-zero.md
+      - Bringing the Origin Home: log/2026-07-fangs-git-origin.md
       - A Bus for the Fleet: log/2026-06-mqtt-backbone.md
       - Breaking the Fleet on Purpose: log/2026-06-chaos-stack.md
       - RAG over Telemetry: log/2026-06-telemetry-rag.md

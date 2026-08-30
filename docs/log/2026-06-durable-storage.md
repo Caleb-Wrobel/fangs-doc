@@ -144,3 +144,19 @@ All three nodes are hardened: the data layer and the gateway's observability dat
 and reboot-proven), and the kiosk's root is read-only (proven by a power-yank). **The epic is
 complete.** The throughline: **the failure modes are the design** — what happens when the new disk
 *isn't there*, or when the power drops mid-write, mattered more than anything that happens when it is.
+
+## Addendum — 2026-07-27: the control plane moved too
+
+The gateway's dashboards-and-alerting engine stayed on the SD card above on purpose — the reasoning
+was sound at the time: a dead disk shouldn't also kill the thing that reports the disk is dead. That
+reasoning assumed the SD card was the more trustworthy half of the pair. Weeks of live wear telemetry
+from the NVMe said otherwise: it sat at essentially no measurable wear under real load, on track for
+a lifespan measured in decades even at several times the current write rate — a hard number a
+microSD's endurance can't offer, since there's no reliable way to read it back. Once the actual risk
+asymmetry flipped, so did the placement: the control plane now lives on the same durable disk as
+the data it watches over.
+
+The three-tier alerting design from above is untouched — the Grafana-native rule that treats a dead
+metrics store as a real alert, the dependency-free watchdog, the cross-node check — none of it
+depended on *which* disk Grafana's own files sat on. Only the one placement decision changed, and
+only because the evidence that justified it stopped holding up.

@@ -3,6 +3,32 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-08** — [A spry little forge](2026-08-forgejo-spike.md): a standing question about
+  whether the smallest node in the fleet could actually run a self-hosted git forge got answered
+  with the real thing, deployed on purpose to be thrown away. Real usage — a full mirrored
+  history pushed in, a genuine CI runner registered against the fleet's spare compute node —
+  measured real memory numbers that confirmed the generic sizing advice never applied here. Two
+  rootless-container snags found and fixed along the way. Proved the premise, decided nothing
+  about keeping it; came down the same day.
+- **2026-08** — [The couch learns to read](2026-08-couch-room-redesign.md): a week of small,
+  real fights with a dashboard tool never built for a glance-from-the-couch audience — a CSS
+  sanitizer that silently strips shorthand properties but not their longhand equivalents,
+  discovered only by comparing rendered output byte for byte; a flat up/down indicator that grew
+  a third state so "up but flaky" stops looking identical to "up and clean"; a pixel-art clock
+  that needed its source frames re-cropped before enlarging actually made it more legible instead
+  of just bigger. One idea explored and deliberately not shipped, recorded as a known open
+  question rather than quietly dropped.
+- **2026-08** — [What counts as drifted](2026-08-drift-check.md): before any code could detect
+  configuration drift, a slower question had to be answered — what even counts as *one* piece of
+  drift, when the same stray change can show up on every run. Scoped down twice to the smallest
+  provable slice: define a drift event with two independent identity tiers and prove both are
+  derivable from a real dry-run, nothing more. A deliberately introduced, then reverted change on
+  a live node was the actual proof, not a quiet demo run.
+- **2026-08** — [The watchdog that watched the wrong door](2026-08-drive-watchdog-mount-race.md):
+  a boot-time disk watchdog, copied from one node to a second, kept a hardcoded dependency on the
+  *first* node's mount path — a plain copy-paste carryover that no syntax check would ever catch.
+  Fixed by deriving the dependency from the same variable that already names the real path,
+  instead of a second, disconnected copy of the same fact.
 - **2026-08** — [The road that never left the house](2026-08-wireguard-hub.md): the off-fleet
   watcher box came back for a different reason — the gateway's own address on the wider internet
   drifts, and nothing had ever tracked it. The fix flips who has to be found: every device,

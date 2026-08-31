@@ -34,9 +34,9 @@ the pieces fit, what broke on the way, and what I'm thinking about building next
 
 | Host    | Hardware       | Role          | Carries |
 |---------|----------------|---------------|---------|
-| `limen` | Pi 5 (4 GB)    | Gateway + observability | Routing / NAT / firewall, VPN egress, recursive DNS, IDS/IPS (planned), observability stack (Prometheus + Grafana + Loki) |
+| `limen` | Pi 5 (4 GB)    | Gateway + observability | Routing / NAT / firewall, VPN egress, recursive DNS, passive flow transcription (Zeek), observability stack (Prometheus + Grafana + Loki) |
 | `cream` | Pi 3B+         | NAS / caching | Network storage, package cache, image registry, nightly log backups |
-| `skoll` | Pi 3B          | Kiosk         | Grafana kiosk on a 7″ touchscreen (displays limen's dashboards) |
+| `skoll` | Pi 3B          | Kiosk         | Grafana kiosk on a 7″ touchscreen in the living room — weather, and whether the internet is up |
 | `auxin` | Pi 5 (16 GB)   | Local AI / data | LLM inference (Ollama) + chat front-end (Open WebUI), embeddings, Postgres + pgvector data layer |
 | `morel` | amd64 (24 GB, GTX 970) | Batch / GPU | GPU inference (Ollama), Wake-on-LAN wake-work-sleep — asleep in S3 until summoned |
 

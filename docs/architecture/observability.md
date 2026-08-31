@@ -32,8 +32,9 @@ panel and the basis for a heat [alert](#alerting).
 
 - **Grafana Alloy** runs on every node, reads the systemd journal, and ships it to
   **Loki** on the gateway.
-- **Loki** keeps roughly a week of logs and is queryable from Grafana alongside the
-  metrics, so a dashboard panel and the log lines behind it sit side by side.
+- **Loki** keeps **180 days** of logs, matched to the metrics retention so a
+  dashboard panel and the log lines behind it cover the same window, and is
+  queryable from Grafana alongside the metrics.
 - **Nightly backup:** the NAS pulls Loki's data once a night, so a gateway reflash
   doesn't lose the log history.
 
@@ -146,7 +147,11 @@ admin sits behind its own auth. Clean padlock, no port numbers to remember.
 ## The kiosk
 
 The display node — a small, passively-cooled board running the **lean OS** — drives a 7″
-touchscreen showing the fleet-overview board. It's a **managed service**, not a hand-opened
+touchscreen. It began on the fleet-overview board, then moved to a living room and was
+**repointed at a board built for that audience** — current weather, and whether the
+internet is up — because the people walking past it are not the ones debugging the
+fleet. The fleet-overview board is untouched and still viewable in Grafana; it is just
+no longer what this screen defaults to. It's a **managed service**, not a hand-opened
 browser: a minimal Wayland compositor launches a single fullscreen browser as a systemd unit
 that **restarts on crash**, **waits for the network** before opening (so a cold boot doesn't
 flash a connection error), and **logs to the journal** — and onward to the log store — like
@@ -162,8 +167,11 @@ one failure the node-down rule can't see.
 Alongside real-time alerting, a **daily report** lands each morning in its own chat channel: a
 terse, retrospective digest of the last 24 hours — per-node availability, up/down transitions,
 peak temperature, memory-stall time, error-log volume, and service churn, with a line calling
-out anything past threshold. A timer on the gateway queries Prometheus and Loki and posts the
-summary.
+out anything past threshold. A timer on the **AI/data node** queries the gateway's
+Prometheus and Loki across the network, persists one structured row per node to the
+data layer, and posts the summary. It began on the gateway and was deliberately
+relocated: the report is a *consumer* of telemetry, and the node that holds the
+database is the one that should keep its history.
 
 It's deliberately **separate from alerting**: alerts are real-time and urgent and get their
 own webhook; the report is retrospective and bulky and gets another, so a chatty summary can

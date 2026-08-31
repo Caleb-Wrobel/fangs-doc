@@ -16,14 +16,19 @@ for retrieval — kept distinct from the raw metrics and logs, which live in the
 
 ## Durability
 
-The node runs on a **microSD card**, treated as *recoverable, not reliable*. Two things make
-that acceptable:
+The database lives on **durable NVMe**, not the node's SD card — the container's storage is
+bind-mounted onto the SSD, so the card carries the OS and nothing that matters. Two more
+things bound the blast radius:
 
 - Postgres holds **derived** data, not the source of truth — the raw metrics and logs are
-  elsewhere, so a card failure loses only recomputable data.
+  elsewhere, so losing it costs recomputable data, not history.
 - The NAS pulls a **nightly `pg_dump`** to its HDD (custom-format, timestamped, rolling
   retention), bounding loss to a single day. The pull authenticates as a **read-only role**
-  that can read everything and own nothing — a backup credential with no write power.
+  that can read everything and own nothing — a backup credential with no write power. The
+  dumps are **encrypted to a key the NAS does not hold**, so the machine storing the backups
+  cannot read them; a restore decrypts on a workstation and streams into the database, so the
+  plaintext never lands on either node's disk
+  ([the locked door beside the open one](../log/2026-07-secrets-at-rest.md)).
 
 ## Status
 

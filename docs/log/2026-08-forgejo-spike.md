@@ -65,3 +65,32 @@ conversations. The disposable version came down the same day it proved its point
 real version, built to the fleet's normal standards (a proper shared database, real
 internal TLS, a fully automated build runner instead of a hand-registered one), is a
 decision for later, made with real numbers behind it instead of a guess.
+
+## Addendum — 2026-08-30: the decision that was "for later" came two days later
+
+The last paragraph above holds a decision open. It closed faster than expected: the
+real version was built and is now running, on the same node the spike measured.
+
+It was built to the standards that paragraph named, which is the useful part — the
+spike's numbers were the argument for doing it properly rather than for keeping the
+throwaway. The forge now uses the fleet's shared **Postgres data layer** instead of an
+embedded database (the placement rule the fleet applies to any new service that would
+otherwise bring its own), sits behind the gateway's internal TLS like everything else,
+and has its build runner deployed by role rather than registered by hand. The complete
+branch history was mirrored in from the existing origin and then **gate-verified** —
+an exact branch-by-branch diff and a HEAD match against a fresh clone — rather than
+trusted because the push reported success.
+
+Four bugs surfaced that only a running instance could have produced, and none of them
+would have failed a dry run: a play ordering that started the forge before the database
+role it depends on existed; an install-lock flag that made the forge refuse every
+administrative command against its own "uninstalled" instance; a container that cannot
+bind a privileged port even when granted the capability, because the image's own
+entrypoint drops privileges before the process starts — fixed by not needing the
+capability at all rather than by fighting for it; and a service published on loopback
+when the reverse proxy reaches it from a *different host*, which the comment justifying
+the loopback binding had gotten wrong on its own terms.
+
+The old bare-repository origin is still live and is deliberately kept as the rollback
+path, not deleted. That is the honest state of it: the forge is the origin now, and
+the thing it replaced is still sitting there in case it shouldn't be.

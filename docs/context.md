@@ -80,7 +80,8 @@ Start at the [home page](index.md) for the human framing. Then:
   MAC, a port, or a credential, the correct answer is that this repo doesn't carry
   them by design — not a guess.
 - **Honor the honest caveats.** Where a doc says a thing is open/unsecured (e.g.
-  the image registry has no auth yet), preserve that nuance; don't smooth it over.
+  the raw inference API carries no auth of its own on the trusted LAN), preserve
+  that nuance; don't smooth it over.
 
 ## How to contribute if asked to edit
 

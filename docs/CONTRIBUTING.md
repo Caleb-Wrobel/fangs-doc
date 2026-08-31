@@ -94,10 +94,21 @@ a public den log / the pack writes down its own paths / nothing private leaks
 No conventional-commit prefix here (the private repo uses one; this repo doesn't).
 A body is welcome for context but optional — the haiku carries the headline.
 
-## Building the site (future)
+## Building the site
 
-The repo is plain Markdown today and reads fine on GitHub. A **MkDocs (Material)**
-site on GitHub Pages is a roadmap item, not a current dependency — it adds a nav
-sidebar and search without changing any of the Markdown. The `.gitignore` already
-excludes its `/site/` build output so the scaffold can land without churn when the
-pile is big enough to warrant it.
+The Markdown here is also published as a **MkDocs (Material)** site on GitHub Pages,
+built and deployed by CI on every push to `main`. The site is additive: every page
+still reads fine as plain Markdown on GitHub, and no page should depend on it.
+
+Build it from the repo root with `mkdocs build` (or `mkdocs serve` to preview);
+`/site/` is gitignored. Two things worth knowing before you push:
+
+- **A broken relative link fails the build.** CI runs `mkdocs build --strict`, which
+  turns the unresolved-link warning into an error — so a bad link never ships.
+- **A page missing from `nav:` does *not*.** That one is only an informational
+  notice, so a new page can land, pass CI, and simply never appear on the site. This
+  has already happened once. Adding a page means editing `mkdocs.yml`'s `nav:` *and*
+  the relevant index, not just writing the file.
+
+The revision-date and authors plugins read git history, so an **uncommitted** page
+trips a strict-mode warning of its own — commit first, then build.

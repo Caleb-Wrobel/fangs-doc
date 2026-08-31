@@ -9,7 +9,9 @@ Newest first.
   history pushed in, a genuine CI runner registered against the fleet's spare compute node —
   measured real memory numbers that confirmed the generic sizing advice never applied here. Two
   rootless-container snags found and fixed along the way. Proved the premise, decided nothing
-  about keeping it; came down the same day.
+  about keeping it; came down the same day — then, two days later, came back for real, built
+  properly on the shared data layer, with the full history mirrored in and verified against a
+  fresh clone (see the addendum).
 - **2026-08** — [The couch learns to read](2026-08-couch-room-redesign.md): a week of small,
   real fights with a dashboard tool never built for a glance-from-the-couch audience — a CSS
   sanitizer that silently strips shorthand properties but not their longhand equivalents,

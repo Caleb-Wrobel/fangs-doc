@@ -44,29 +44,15 @@ Still on its list:
 - **Git as the fleet's nervous system.** Now that the true git source lives *on* the fleet (see
   [Bringing the origin home](log/2026-07-fangs-git-origin.md)), a family of ideas gets cheap: pushing
   in-flight branches so the memory can reason about *unshipped* work, not just landed main; a heavier
-  local clone on the GPU node for on-device search; a real self-hosted web forge (web UI, PRs, issues);
-  and the far-off north star — the fleet applying *itself* from its own git instead of a human running
-  the playbook (push-config → pull-gitops). Each is a possible standalone piece; it only becomes a
-  *direction* worth naming once two or three of them actually form. Deliberately unchartered for now.
-- **Small-screen kiosk legibility.** On the 7″ 800×480 wall panel the dashboards fall
-  back to a cramped single-column layout with oversized stat text. The first lever
-  tried — a browser device-scale flag — *ran cleanly but did the wrong thing*: under
-  this Wayland compositor it shrank the whole window (letterboxing the screen) instead
-  of densifying the content. Open question: the right lever for **denser content that
-  fills the panel** — a larger logical resolution, an output-level scale, or page zoom —
-  and which of those survives reboots. A textbook *sound execution of an unsound premise*
-  (see the [workflow log](log/2026-06-feature-workflow.md) on telling "wrong" from
-  "incomplete"): what the flag actually does is now recorded, and the fix is a separate
-  future piece of work — deliberately decoupled from the kiosk service itself, which is
-  done.
+  local clone on the GPU node for on-device search; and the far-off north star — the fleet applying
+  *itself* from its own git instead of a human running the playbook (push-config → pull-gitops). One
+  member of the family has since left the list and shipped — a real **self-hosted web forge** now runs
+  on the NAS (see *done recently*) — and a second, drift detection, is being built. Each is still a
+  standalone piece; the set is only starting to look like a *direction* rather than a pile.
 - **A relocatable observability "satellite."** The dashboards node is now WiFi-
   capable with failover. Could it become a *wireless-first*, relocatable node —
   carry the touchscreen to another room and have it just work — rather than being
   tethered to the switch? The AP and the failover plumbing already point this way.
-- **Where does the doc-site live?** This repo is plain Markdown today. A
-  **MkDocs (Material) site on GitHub Pages** would add a nav sidebar, full-text
-  search, and nicer phone reading once there are enough pages to warrant it. The
-  Markdown doesn't change — it's purely additive when the pile gets big enough.
 - **TLS trust ergonomics.** Importing the fleet CA per workstation works but is a
   manual step that's easy to forget (and looks like a broken deploy when skipped).
   Is there a smoother trust-distribution story for a home network?
@@ -85,6 +71,30 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **A self-hosted web forge, on the smallest node in the fleet** — the "real web forge"
+  that sat in the git-nervous-system noodle above is now running on the NAS: web UI, pull
+  requests, issues, and CI, backed by the Postgres data layer rather than its own embedded
+  database, with the full branch history mirrored in and verified against a fresh clone.
+  It began as a **disposable spike** deployed specifically to be thrown away — the question
+  was only whether a 1 GB board could hold it — and the measured answer was good enough that
+  the throwaway became the build ([spike](log/2026-08-forgejo-spike.md)). Four bugs only a
+  running instance could surface, none of which a dry run would ever have caught.
+- ✅ **The doc-site question, answered by building it** — this notebook used to ask, right
+  here in this list, where a doc-site should live and whether the pile was big enough to
+  warrant one. It's been a **MkDocs (Material) site on GitHub Pages** since 2026-06-20, built
+  and deployed by CI on every push, with a nav sidebar, full-text search, and per-page
+  revision dates. The Markdown never changed, which was the whole bet — the site is purely
+  additive, and every page still reads fine as plain text.
+- ✅ **Small-screen kiosk legibility — closed by dropping the premise.** The open question was
+  *which scaling lever* densifies a 7″ 800×480 panel: a larger logical resolution, an
+  output-level scale, or page zoom. It was never answered, because it stopped mattering.
+  Instead of scaling a board built for a desktop, the panel got **its own board, designed for
+  its own viewport** and for an audience that isn't debugging anything
+  ([the couch-room redesign](log/2026-08-couch-room-redesign.md)). The earlier finding still
+  stands as recorded — a browser device-scale flag shrinks the whole window under this
+  compositor instead of densifying content — it just no longer blocks anything. The mirror
+  image of the "sound execution of an unsound premise" lesson that produced it: sometimes the
+  fix for a stuck question is to stop needing the answer.
 - ✅ **Six placeholder credentials replaced** — the file-share password, the dashboard admin
   password and four database role passwords were all still the literal placeholder string from the
   example secrets file. Never weak exactly; never *chosen*. All six are now real random values,

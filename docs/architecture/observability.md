@@ -23,10 +23,12 @@ enabled and had rebooted into it.
 
 ### Thermals
 
-node_exporter also exposes each node's **SoC temperature**, charted on a fleet
+node_exporter also exposes each Pi's **SoC temperature**, charted on a fleet
 thermals dashboard. On small-board computers with modest cooling, a creeping
 temperature is an early sign of a failing fan or blocked airflow — so it's both a
-panel and the basis for a heat [alert](#alerting).
+panel and the basis for a heat [alert](#alerting). The amd64 node has no SoC and no
+such sensor, so it isn't on that rule — its real thermal risk is the GPU, which gets
+a rule of its own.
 
 ## Logs
 
@@ -67,9 +69,10 @@ in one place.
 
 **What fires today:**
 
-- **Heat.** Each node's SoC temperature, alerting on a sustained climb *before* the
+- **Heat.** Each *Pi's* SoC temperature, alerting on a sustained climb *before* the
   hardware would start throttling — early warning for a failing fan or blocked
-  airflow, not a post-mortem.
+  airflow, not a post-mortem. The amd64 node is covered by a separate GPU-temperature
+  rule instead, since it has no SoC sensor for this one to match on.
 - **A node going dark.** If a host stops being scraped for long enough, that's an
   outage. This rule was motivated by a real incident: a node dropped off and
   *nothing said so* — the monitoring fleet couldn't report its own member missing.

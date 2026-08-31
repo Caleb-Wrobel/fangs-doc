@@ -25,8 +25,9 @@ the one deliberate exception is a minimal off-fleet cloud watcher (below) whose
 whole job is noticing when the house itself goes dark — a witness has to stand
 outside what it's watching.
 
-The constraint is half the fun. Most of it runs on modest ARM boards — with one amd64 workhorse for the heavy lifting — every node
-is described in code and reproducible from a wiped SD card, and the rule of thumb
+The constraint is half the fun. Most of it runs on modest ARM boards — with one amd64 workhorse
+for the heavy lifting — every node is described in code and rebuildable from a blank disk, and
+the rule of thumb
 is *understand it before you automate it*. This notebook is where I write down how
 the pieces fit, what broke on the way, and what I'm thinking about building next.
 
@@ -83,9 +84,11 @@ one.
 ## Conventions
 
 - **Config management:** Ansible — one role per concern, hosts grouped by function.
-- **OS:** Raspberry Pi OS Lite (Trixie), headless, across the whole fleet — including the
-  kiosk node, which drives its touchscreen with a minimal Wayland compositor + one browser,
-  not a full desktop.
+- **OS:** lean and headless everywhere — but *not* the same OS everywhere. Raspberry Pi OS
+  Lite (Trixie) on **every Pi**, including the kiosk node, which drives its touchscreen with a
+  minimal Wayland compositor and one browser rather than a full desktop. The amd64 node runs a
+  minimal Debian instead, and the off-fleet box runs its provider's minimal image. *Headless
+  and minimal* is the fleet-wide rule; Raspberry Pi OS is not.
 - **Name resolution:** every node carries the full fleet by name; the gateway
   resolves for clients. Internal services answer on `*.fangs.internal`.
 - **Commit messages:** subject lines are 5-7-5 haiku. Yes, really.

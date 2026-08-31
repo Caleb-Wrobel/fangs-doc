@@ -35,9 +35,11 @@ worth not opening.
 
 ## The path a node walks
 
-1. **Flash** the OS image — the lean headless build (every node, the kiosk included; the
-   kiosk draws its screen from a minimal compositor, not a full desktop) — and seed the
-   hostname and the fleet's SSH public key at flash time.
+1. **Install** the OS — always the lean headless build, never a desktop one (the kiosk
+   included; it draws its screen from a minimal compositor, not a full desktop) — and seed the
+   hostname and the fleet's SSH public key at install time. On a Pi that means flashing
+   Raspberry Pi OS Lite and letting the imager seed both; on the amd64 node it means a minimal
+   Debian netinst, where the same two things happen during the install instead.
 2. **First boot** brings the node up on a dynamic-pool lease. That's expected; it gets
    pinned next.
 3. **Identify the node's hardware address** from the gateway. No login is needed: the

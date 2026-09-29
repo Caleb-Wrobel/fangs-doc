@@ -74,10 +74,11 @@ flip by reserving the *same* address against **both** the wired and wireless MAC
 
 The gateway is the only WAN-facing surface, and internal services are never
 published there — the reverse proxy listens on the LAN side only. So reaching a
-service from a machine that isn't on the home LAN means **tunnelling through the
-gateway**, not exposing the service. Today that's an SSH tunnel: one authenticated
-path in, no new inbound port, and the internal `*.fangs.internal` names keep working
-because DNS resolution rides the tunnel back to the gateway's resolver.
+service from a machine that isn't on the home LAN means **tunnelling in**, not
+exposing the service. It began as an SSH tunnel through the gateway — one
+authenticated path, no new inbound port, the internal `*.fangs.internal` names
+resolving back through it — which worked, but only from the same upstream network.
+The overlay below replaced it.
 
 A standing temptation is the commercial VPN's **built-in mesh overlay** — it would
 need no inbound port and reuses a vendor already trusted for egress. It stays
@@ -93,7 +94,7 @@ policy in one place. (The full story is in the
 
 That build now exists: a **self-hosted WireGuard road-warrior**, landed on the gateway
 2026-07-08 and **redesigned 2026-08-20** so the gateway is no longer the one accepting inbound
-connections at all. The off-fleet watcher box (a small always-reachable cloud presence, fixed
+connections at all. The off-fleet box (a small always-reachable cloud presence, fixed
 address) is the one point everything dials *out* to now — every client, the gateway included —
 which means the gateway carries **zero** inbound ports for this rather than one. The vendor
 firewall stays off and the kill-switch-in-the-firewall model stays intact throughout. It's still

@@ -80,7 +80,7 @@ mistakes; they're the most useful part.
 
 - **Wrap prose at ~80 columns.** Tables, code blocks, and long links are exempt.
 - **Relative links** between pages (`../architecture/tls-proxy.md`), so the repo
-  reads correctly on GitHub today and through MkDocs later.
+  reads correctly both as plain Markdown on GitHub and on the MkDocs site.
 - Sentence-case headings. One `#` h1 per file.
 
 ## Commit messages

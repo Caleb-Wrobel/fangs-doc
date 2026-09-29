@@ -55,11 +55,17 @@ Start at the [home page](index.md) for the human framing. Then:
   - [networking.md](architecture/networking.md) — gateway, DNS, VPN egress, the
     fail-closed kill switch.
   - [nas-caching.md](architecture/nas-caching.md) — storage, package/image caches,
-    the nightly log backup, surviving on 1 GB.
-  - [observability.md](architecture/observability.md) — metrics (Prometheus) and
-    logs (Alloy → Loki).
+    the nightly backups, the git forge, surviving on 1 GB.
+  - [observability.md](architecture/observability.md) — metrics (Prometheus), logs
+    (Alloy → Loki), network flow transcription (Zeek), alerting, and the digests.
   - [tls-proxy.md](architecture/tls-proxy.md) — the internal CA (mkcert) and the
     one reverse proxy that gives services a clean `https://name.fangs.internal`.
+  - [local-ai.md](architecture/local-ai.md) — on-device LLM inference, the chat UI,
+    and why heavy work lives elsewhere.
+  - [data-layer.md](architecture/data-layer.md) — Postgres + pgvector, its tenants,
+    and how it's backed up.
+  - [onboarding.md](architecture/onboarding.md) — how a freshly-flashed node becomes
+    a managed fleet member.
 - **[log/](log/README.md)** — *dated* build entries, newest first. Each is a "what got
   built / what fought back / what I'd tell past me" narrative. Read these to answer
   "what went wrong / why was it done this way / what was learned." Start at
@@ -108,18 +114,20 @@ and one amd64 box — plus one node deliberately outside the LAN entirely:
 | Node        | Role               | Carries (conceptually)                                  |
 |-------------|--------------------|---------------------------------------------------------|
 | gateway     | WAN edge + obs     | routing/NAT/firewall, VPN egress + kill switch, DNS, and the observability stack (metrics, dashboards, logs) |
-| NAS         | storage/cache      | file shares, package cache, image registry, nightly log backup |
-| kiosk       | observability wall | a Grafana kiosk on a touchscreen, rendering the gateway's dashboards |
+| NAS         | storage/cache/forge | file shares, package cache, image registry, nightly log + database backups, the self-hosted git forge |
+| kiosk       | living-room display | a Grafana kiosk on a touchscreen: weather, a few-hours look-ahead, severe-weather alerts, and whether the internet is up |
 | AI / data   | local AI + data    | LLM inference + a chat UI, and a Postgres + pgvector data layer |
-| batch / GPU | summoned muscle    | GPU inference, woken on demand by Wake-on-LAN and asleep otherwise |
-| off-fleet watcher | outside witness | a minimal public-cloud instance that accepts a heartbeat *pushed out* by the gateway (egress-only, no inbound path) and pages if it stops arriving |
+| batch / GPU | summoned muscle    | GPU inference and the forge's CI runner, woken on demand by Wake-on-LAN and asleep otherwise |
+| off-fleet box | outside witness + overlay hub | a small public-cloud instance that (1) accepts a heartbeat *pushed out* by the gateway and pages if it stops arriving, and (2) is the fixed address the remote-access WireGuard overlay dials out to — gateway included, so the gateway takes no inbound connections |
 
 Only the gateway touches the WAN; the others are peers behind it. The security
 boundary that matters is the WAN edge, not host-to-host — the docs call this
 "visibility over least-privilege inside the LAN." (The repo uses the wolf hostnames
-as labels; their *addresses* are intentionally absent.) The off-fleet watcher is
+as labels; their *addresses* are intentionally absent.) The off-fleet box is
 not behind the gateway and not a peer of the other five — it is structurally
-outside the LAN on purpose, so it can still speak when the LAN can't.
+outside the LAN on purpose, so it can still speak when the LAN can't. A second,
+idle free-tier box exists beside it, held in reserve with no job yet; don't
+describe it as doing anything.
 
 ## Freshness
 

@@ -62,7 +62,7 @@ WAN-facing, so sharing is an inside-the-house convenience, not an exposure.
 important part, and it was learned the hard way — see
 [the locked door beside the open one](../log/2026-07-secrets-at-rest.md). The drive
 root holds only *service* state: database backups, the log archive, the container
-registry, the package cache, and the fleet's own git origin. None of it is user
+registry, the package cache, and the fleet's git forge. None of it is user
 data, and none of it belongs to anyone mounting a file share. Sharing the root
 handed all of it to any share client at once.
 
@@ -139,6 +139,46 @@ and mirrors its log data store to the HDD.
 - **A mirror, not an archive.** It reflects the current log store for
   disaster-recovery, deleting what the source deleted — it's "get the gateway back
   to now after a rebuild," not long-term retention.
+
+## Other backups that land here
+
+The log mirror isn't the only thing this node keeps. It also pulls a **nightly dump of
+the data layer's databases**, encrypted to a key this node deliberately doesn't hold
+(see [Data layer](data-layer.md#durability)), and it serves as the **backup target for
+the workstation**: an encrypted, deduplicated snapshot repository the laptop pushes to,
+confined to its own directory below the drive root — the same scoping rule as the file
+shares, for the same reason.
+
+## The git forge
+
+The fleet's git history lives here too, in a **self-hosted web forge** (Forgejo): web UI,
+pull requests, issues, and CI, on the smallest board in the fleet. It began as a
+throwaway spike whose only question was whether a 1 GB node could hold it
+([a spry little forge](../log/2026-08-forgejo-spike.md)); the measured answer was yes,
+comfortably, so the throwaway became the build. It is now the fleet's **authoritative
+git origin**.
+
+It is a good example of how this node stays inside its budget:
+
+- **No database of its own.** The forge keeps its state in the shared Postgres data
+  layer on the 16 GB node instead of an embedded one here, so this node carries the
+  web front and the git objects and nothing else heavy.
+- **Rootless Quadlet, unprivileged ports.** Same container conventions as the registry.
+  Its git-over-SSH listener sits on an unprivileged port rather than fighting the
+  container image for the privileged one — the node's own admin SSH keeps the standard
+  port.
+- **CI runs elsewhere.** The forge only schedules jobs. The runner lives on the GPU node,
+  which sleeps; since the forge has no "job queued" event to push, a cheap poller on the
+  AI/data node notices queued work and wakes it. (The runner is registered and online,
+  but isn't running real jobs yet — the workflow's runner label and the host's tooling
+  still need to agree.)
+- **GitHub is a mirror, not the origin.** Every push is copied offsite by the forge's own
+  push mirror, using a key the forge generated itself; only the public half ever left it.
+
+It replaced an earlier, simpler arrangement — a bare repository served over this node's
+SSH by a locked-down account, with a hook that mirrored to GitHub
+([bringing the origin home](../log/2026-07-fangs-git-origin.md)). That older origin is
+kept in place as the rollback path until the migration's last steps are done.
 
 ## Surviving on 1 GB
 

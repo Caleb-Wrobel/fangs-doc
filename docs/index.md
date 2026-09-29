@@ -20,10 +20,11 @@ black boxes of a home network with parts I configured myself and understand all
 the way down. It's a handful of small, cheap machines that together do the job of
 a commercial router, a NAS, and a monitoring appliance: its own gateway and
 firewall, its own DNS, its own VPN egress, its own internal certificate authority,
-and its own metrics-and-logs stack. The home LAN core is entirely self-hosted;
-the one deliberate exception is a minimal off-fleet cloud watcher (below) whose
-whole job is noticing when the house itself goes dark — a witness has to stand
-outside what it's watching.
+and its own metrics-and-logs stack — and, lately, its own git forge. The home LAN
+core is entirely self-hosted; the one deliberate exception is a small off-fleet
+cloud box (below) that notices when the house itself goes dark — a witness has to
+stand outside what it's watching — and gives remote devices somewhere fixed to
+dial.
 
 The constraint is half the fun. Most of it runs on modest ARM boards — with one amd64 workhorse
 for the heavy lifting — every node is described in code and rebuildable from a blank disk, and
@@ -36,26 +37,32 @@ the pieces fit, what broke on the way, and what I'm thinking about building next
 | Host    | Hardware       | Role          | Carries |
 |---------|----------------|---------------|---------|
 | `limen` | Pi 5 (4 GB)    | Gateway + observability | Routing / NAT / firewall, VPN egress, recursive DNS, passive flow transcription (Zeek), observability stack (Prometheus + Grafana + Loki) |
-| `cream` | Pi 3B+         | NAS / caching | Network storage, package cache, image registry, nightly log backups |
-| `skoll` | Pi 3B          | Kiosk         | Grafana kiosk on a 7″ touchscreen in the living room — weather, and whether the internet is up |
+| `cream` | Pi 3B+         | NAS / caching / forge | Network storage, package cache, image registry, nightly log + database backups, self-hosted git forge (Forgejo) |
+| `skoll` | Pi 3B          | Kiosk         | Grafana kiosk on a 7″ touchscreen in the living room — weather now and over the next few hours, severe-weather alerts, and whether the internet is up |
 | `auxin` | Pi 5 (16 GB)   | Local AI / data | LLM inference (Ollama) + chat front-end (Open WebUI), embeddings, Postgres + pgvector data layer |
-| `morel` | amd64 (24 GB, GTX 970) | Batch / GPU | GPU inference (Ollama), Wake-on-LAN wake-work-sleep — asleep in S3 until summoned |
+| `morel` | amd64 (24 GB, GTX 970) | Batch / GPU | GPU inference (Ollama), the forge's CI runner, Wake-on-LAN wake-work-sleep — asleep in S3 until summoned |
 
 `limen` is the only node on the WAN edge; everything else sits behind it on a
 flat, trusted LAN.
 
-## Watching from outside
+## Outside the house
 
-One more piece sits *outside* the LAN entirely: a minimal cloud watcher, on the
-free tier of a public cloud provider, whose only job is to notice if the whole
-house goes dark. It's a dead-man's switch, not a poller: the gateway pushes it
-a periodic heartbeat over its normal outbound-only egress, and the watcher
-pages out on its own path if that heartbeat ever stops — nothing about it
-reaches back into the LAN. A watcher that reports through the thing it watches
-isn't a watcher, so this one lives outside every failure domain the fleet has
-and reports out over its own path — the fleet's one deliberate, minimal cloud
-dependency, and it exists specifically so the *rest* of the system doesn't need
-one.
+One more piece sits *outside* the LAN entirely: a small box on the free tier of a
+public cloud provider, with two jobs.
+
+- **The witness.** It notices if the whole house goes dark. It's a dead-man's
+  switch, not a poller: the gateway pushes it a periodic heartbeat over its normal
+  outbound-only egress, and the watcher pages out on its own path if that
+  heartbeat ever stops. A watcher that reports through the thing it watches isn't
+  a watcher, so this one lives outside every failure domain the fleet has.
+- **The fixed point.** The house's own address on the internet drifts, so remote
+  devices — and the gateway itself — dial *out* to this box's fixed address, which
+  relays a split-tunnel WireGuard overlay between them. Nobody dials in to the
+  house; the gateway accepts no inbound connection for remote access at all.
+
+It's the fleet's one deliberate cloud dependency, and it exists specifically so the
+*rest* of the system doesn't need one. A second free-tier box sits idle beside it,
+held in reserve for a future outward-facing job.
 
 ## How to read this
 
@@ -64,21 +71,25 @@ one.
   - [Networking](architecture/networking.md) — gateway, DNS, VPN egress, the
     kill switch.
   - [NAS & caching](architecture/nas-caching.md) — storage, the package and image
-    caches, and the nightly log backup.
-  - [Observability](architecture/observability.md) — metrics and logs.
+    caches, the nightly backups, and the git forge.
+  - [Observability](architecture/observability.md) — metrics, logs, network flows,
+    alerting, and the digests that come to you.
   - [TLS & reverse proxy](architecture/tls-proxy.md) — the internal PKI and how
     services get a clean `https://` name.
   - [Onboarding a node](architecture/onboarding.md) — how a freshly-flashed Pi
     becomes a managed, observable member of the fleet.
   - [Local AI inference](architecture/local-ai.md) — small LLMs served on-device,
     with a chat UI, so lighter AI tasks stay off the cloud.
-- **[Build log](log/README.md)** — dated entries on what got built and what fought back.
-  - [2026-06 — The free agent gets a job: local LLM inference](log/2026-06-local-ai.md)
-  - [2026-06 — Onboarding the free agent](log/2026-06-auxin-onboarding.md)
-  - [2026-06 — Pressure-stall metrics, fleet-wide](log/2026-06-psi-fleetwide.md)
-  - [2026-06 — WiFi failover](log/2026-06-wifi-failover.md)
-  - [2026-06 — Centralized logging](log/2026-06-centralized-logging.md)
-  - [2026-06 — Internal CA & reverse proxy](log/2026-06-tls-reverse-proxy.md)
+  - [Data layer](architecture/data-layer.md) — Postgres + pgvector, the home for
+    derived data, embeddings, and the services that would otherwise bring their
+    own database.
+- **[Build log](log/README.md)** — dated entries on what got built and what fought
+  back, newest first. The most recent few:
+  - [2026-08 — A spry little forge](log/2026-08-forgejo-spike.md)
+  - [2026-08 — The couch learns to read](log/2026-08-couch-room-redesign.md)
+  - [2026-08 — What counts as drifted](log/2026-08-drift-check.md)
+  - [2026-08 — The road that never left the house](log/2026-08-wireguard-hub.md)
+  - [2026-07 — The rotation that rotated nothing](log/2026-07-credential-rotation.md)
 - **[Roadmap](roadmap.md)** — future state, open questions, things to noodle on.
 
 ## Conventions

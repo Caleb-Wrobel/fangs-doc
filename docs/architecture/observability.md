@@ -1,7 +1,9 @@
 # Observability
 
-Two pillars: **metrics** (what's happening now, numerically) and **logs** (what
-happened, in words). Both are fleet-wide and both land somewhere durable.
+Two fleet-wide pillars: **metrics** (what's happening now, numerically) and **logs**
+(what happened, in words). Both land somewhere durable. A third, narrower source sits
+beside them: **network flows** — a transcript of who on the LAN talked to what,
+recorded at the gateway rather than on every node.
 
 ## Metrics
 
@@ -10,6 +12,10 @@ happened, in words). Both are fleet-wide and both land somewhere durable.
 - **Prometheus** runs on the **gateway** — the observability host, co-located with the
   logs and the reverse proxy — and scrapes every node in the fleet.
 - **Grafana** renders it, also on the gateway.
+- The **off-fleet box** (see [Overview](overview.md#outside-the-house)) is scraped too,
+  back through the overlay tunnel — host health plus tunnel-handshake health, on its own
+  board. It's deliberately *board-only*: its liveness already has an independent page
+  path, so a second one here would only double-page.
 - A separate **lean kiosk node** drives a **7″ touchscreen** as an always-on wall display,
   reaching Grafana over the proxy rather than running it locally (see [The kiosk](#the-kiosk)).
 
@@ -53,6 +59,20 @@ next reboot." Pointing it at persistent storage (and configuring the deletion
 store that retention actually needs) fixed it. The takeaway: verify persistence
 empirically, don't assume a default is durable.
 
+## Network flows
+
+The gateway runs **Zeek** passively on the LAN bridge: it doesn't block or judge
+anything, it *transcribes* — connection records, DNS lookups, TLS handshakes — into
+JSON on the gateway's durable disk, shipped through the same log pipeline as everything
+else with the record type as a queryable label. The intrusion-*prevention* half that
+usually rides alongside was deliberately left out: a home LAN needs a record, not a
+judge ([the transcriber in the doorway](../log/2026-07-zeek-flow-visibility.md)).
+
+Downstream, a small aggregator on the AI/data node folds those records into a
+**name-keyed connection map** in the data layer — which fleet node talks to which
+outside service — so "what does this box phone home to?" is a query, not an
+investigation.
+
 ## Alerting
 
 Dashboards tell you something's wrong *if you happen to be looking*. Alerts come
@@ -81,6 +101,19 @@ in one place.
 - **The kiosk gone dark.** If the wall-display service dies while its host is still up — a
   crashed or failed kiosk — that's caught too. The host is fine, so the node-down rule
   wouldn't notice; a unit-scoped check does.
+- **A service gone dark on a healthy host.** The same idea generalized: any non-node scrape
+  target (an exporter, a service's own metrics endpoint) that stops answering, and the
+  database refusing connections while its disk and host are fine.
+- **A clock that never synced.** Only the gateway has a battery-backed clock; a node that
+  boots before the gateway can come up with the wrong time and never correct itself, so an
+  unsynced clock that persists is a page, not a curiosity.
+- **The summoned node, judged by outcome.** The GPU node sleeps on purpose, so it's excused
+  from the node-down rule — instead one rule knows when it *declared* it was going to sleep,
+  and another asks whether the work routed to it is actually getting done.
+- **The monitoring itself.** Metrics live on a pullable external disk, so a liveness rule
+  fires if the metrics store stops answering at all — and, beneath the whole stack, a
+  dependency-free watchdog on the gateway pages straight to the channel if that disk
+  disappears, even with every other observability service down.
 
 **A subtlety worth stating: don't alert on *absence* the way you alert on *badness*.**
 A node that's genuinely down still reports a clear "I'm down" reading the rule can
@@ -154,7 +187,17 @@ touchscreen. It began on the fleet-overview board, then moved to a living room a
 **repointed at a board built for that audience** — current weather, and whether the
 internet is up — because the people walking past it are not the ones debugging the
 fleet. The fleet-overview board is untouched and still viewable in Grafana; it is just
-no longer what this screen defaults to. It's a **managed service**, not a hand-opened
+no longer what this screen defaults to.
+
+The board's weather comes from a small exporter on the AI/data node: current conditions
+from the nearest live personal weather station, and an **hourly look-ahead — now, +3h,
++6h** — from the national weather service's public forecast API. That horizon was chosen
+for how the screen is actually used: glanced at on the way out the door, where "will it
+rain on the way home?" matters more than tomorrow. Active **severe-weather alerts** for
+home and a couple of places family live take over the board's decorative corner when
+they fire — a warning at home outranks a watch at home, which outranks a warning
+elsewhere, and a routine watch somewhere distant stays silent. Each source degrades
+to its own "unavailable" on failure rather than showing a stale value as current. It's a **managed service**, not a hand-opened
 browser: a minimal Wayland compositor launches a single fullscreen browser as a systemd unit
 that **restarts on crash**, **waits for the network** before opening (so a cold boot doesn't
 flash a connection error), and **logs to the journal** — and onward to the log store — like
@@ -165,7 +208,9 @@ Its health is itself observed: a unit-scoped metric reports whether the kiosk se
 alive, and the [alert](#alerting) above fires if the box is up but the display is dead — the
 one failure the node-down rule can't see.
 
-## Daily report
+## Reports that come to you
+
+### Daily report
 
 Alongside real-time alerting, a **daily report** lands each morning in its own chat channel: a
 terse, retrospective digest of the last 24 hours — per-node availability, up/down transitions,
@@ -180,3 +225,20 @@ It's deliberately **separate from alerting**: alerts are real-time and urgent an
 own webhook; the report is retrospective and bulky and gets another, so a chatty summary can
 never bury a page. It's also the **baseline** for a future "is anything *unusually* off?"
 experiment — you can't recognize abnormal until you've written down normal.
+
+### Weekly digests
+
+Three more reports share the reporting channel, each on its own weekly cadence so they
+never land back to back:
+
+- **A log digest.** A week of error-level log lines per node, compressed deterministically
+  into counted signatures first, then handed to a model on the summoned GPU node for a
+  short narrative per host. The LLM stage is non-fatal: if the GPU node won't wake, the
+  digest goes out structural-only rather than not at all.
+- **A package-staleness digest.** Pending upgrades and stale images per node, persisted to
+  the data layer so staleness has a history. Staleness only — vulnerability matching is
+  deliberately deferred.
+- **A development-activity digest** (experimental). Narrates what changed in the
+  configuration repo itself — commits and feature-pipeline handoffs — rather than fleet
+  telemetry. It has no durable record yet, on purpose: it has to prove the narrative is
+  worth keeping before it earns one.

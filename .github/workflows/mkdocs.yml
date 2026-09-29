@@ -22,9 +22,11 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
+        # mkdocs capped below 2.0: 2.0 removes the plugin system this site depends on
+        # (search, git-revision-date, git-authors) and has no migration path.
         run: |
           pip install \
-            mkdocs \
+            'mkdocs<2' \
             mkdocs-material \
             mkdocs-git-revision-date-localized-plugin \
             mkdocs-git-authors-plugin

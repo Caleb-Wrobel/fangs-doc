@@ -5,6 +5,27 @@ the ideas worth chewing on while away from the keyboard.
 
 ## Near-term, fairly decided
 
+- **An off-site backup** (built, awaiting its first live run). Every backup the fleet keeps
+  today is one hop from the NAS and inside the same building. The next copy goes
+  off-premises to a free-tier object store, encrypted client-side before it leaves so the
+  provider never holds plaintext: database dumps, the forge, the dashboard server's own
+  state, and the full long-horizon metrics store. Measured before designed — the whole set
+  turned out to be about 14 GB, not the 25–70 GB guessed, so it fits free with no trimming.
+  Runs from the NAS, where the local backups already gather, memory-capped to live within
+  its 1 GB. The repository ships *mutable* on purpose: a
+  write-once lock would block pruning and bust the free quota while the pipeline is still
+  unproven, so tamper-resistance is a follow-up once it has earned trust.
+- **A witness that looks *in*** (designed, not built). The fleet's two outside-in checks —
+  the third-party uptime ping and the off-fleet watcher — both only prove *the gateway can
+  still phone home*. A dead DNS resolver or a crashed dashboard server leaves both green.
+  The off-fleet box, already on the overlay, will actively resolve a name and fetch a real
+  page through the tunnel, paging on its own path if either fails.
+- **Finish moving into the forge.** The forge is the origin now, but four loose ends
+  remain: its CI runner is online but not yet running real jobs (label and tooling
+  mismatch); its database isn't in the nightly dump yet; the AI/data node's read-only
+  mirror — the one the memory tools read — still pulls from the old origin, so it stopped
+  seeing new commits at the cutover; and the old bare-repo origin is still standing as a
+  rollback path until those are verified.
 - **Auth gate in front of the reverse proxy.** Today services rely on their own
   auth behind the proxy. A single sign-on / forward-auth layer at the proxy would
   let new services be protected by default instead of each rolling their own.
@@ -47,8 +68,11 @@ Still on its list:
   local clone on the GPU node for on-device search; and the far-off north star — the fleet applying
   *itself* from its own git instead of a human running the playbook (push-config → pull-gitops). One
   member of the family has since left the list and shipped — a real **self-hosted web forge** now runs
-  on the NAS (see *done recently*) — and a second, drift detection, is being built. Each is still a
-  standalone piece; the set is only starting to look like a *direction* rather than a pile.
+  on the NAS and is the fleet's origin (see *done recently*) — and a second, drift detection, has
+  its first slice landed: a precise definition of what *one* drift event is, proven against a real
+  dry run. Remembering drift across runs, so a new drift can be told from a repeat, is the next
+  piece. Each is still a standalone piece; the set is only starting to look like a *direction*
+  rather than a pile.
 - **A relocatable observability "satellite."** The dashboards node is now WiFi-
   capable with failover. Could it become a *wireless-first*, relocatable node —
   carry the touchscreen to another room and have it just work — rather than being
@@ -71,10 +95,29 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **The couch-room board learns the next few hours** — the living-room kiosk's forecast
+  moved from the national weather service's twice-daily text outlook to an hourly
+  **now / +3h / +6h** look-ahead, because the people who glance at it do so on the way out
+  the door. It also gained a **severe-weather panel** that takes over the board's decorative
+  corner only while an alert is active, with a fixed priority ladder so a distant watch never
+  outranks weather at home. A test switch injects a synthetic alert through the *real*
+  classification path rather than around it, so all three tiers were proven live before
+  landing.
+- ✅ **What counts as drifted** — the first slice of drift detection, scoped down twice to the
+  smallest provable atom: define a drift event with two independent identity tiers and prove
+  both are derivable from a real dry run. A deliberately introduced, then reverted change on
+  a live node was the proof ([log](log/2026-08-drift-check.md)).
 - ✅ **A self-hosted web forge, on the smallest node in the fleet** — the "real web forge"
-  that sat in the git-nervous-system noodle above is now running on the NAS: web UI, pull
-  requests, issues, and CI, backed by the Postgres data layer rather than its own embedded
-  database, with the full branch history mirrored in and verified against a fresh clone.
+  that sat in the git-nervous-system noodle above is now running on the NAS and is the
+  fleet's **authoritative git origin**: web UI, pull requests, issues, and CI, backed by the
+  Postgres data layer rather than its own embedded database, with the full branch history
+  mirrored in and verified against a fresh clone. GitHub stays an offsite copy, now fed by
+  the forge's own push mirror (a key the forge minted itself; only the public half left it).
+  Repointing the origin quietly broke three things on the workstation — a branch still
+  tracking the retired repo, so plain pushes *succeeded* into the wrong place; most branches
+  with no upstream at all; and the local commit hooks silently switched off — which is the
+  small permanent lesson: after moving `origin`, check where it points, what each branch
+  tracks, and whether the offsite copy is attached to the path pushes actually take.
   It began as a **disposable spike** deployed specifically to be thrown away — the question
   was only whether a 1 GB board could hold it — and the measured answer was good enough that
   the throwaway became the build ([spike](log/2026-08-forgejo-spike.md)). Four bugs only a
@@ -163,8 +206,8 @@ Still on its list:
   self-reverting faults into two leaf nodes only (never the gateway or the AI/data node) to
   prove alerts actually fire and nodes actually recover — treating a blind spot ("broke it,
   nothing paged") as a first-class finding, not a footnote ([log](log/2026-06-chaos-stack.md)).
-- ✅ The fleet's git source of truth, brought in-house: the NAS is now the **authoritative git origin**
-  (a bare repo served over its own SSH by a `git-shell`-confined service account), with GitHub demoted
+- ✅ The fleet's git source of truth, brought in-house (since superseded by the forge, above): the NAS
+  became the **authoritative git origin** (a bare repo served over its own SSH by a `git-shell`-confined service account), with GitHub demoted
   to an offsite **backup** that can only ever add refs, never delete them. The AI/data node's mirror —
   which the memory tools read — now pulls from an always-current LAN source, **read-only by
   construction** (a forced fetch-only command; proven it can pull and cannot push), instead of depending

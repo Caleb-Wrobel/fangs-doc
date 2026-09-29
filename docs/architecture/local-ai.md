@@ -70,11 +70,12 @@ though the raw inference API, on the trusted LAN behind the gateway, is not.
 - **On the LAN:** browse the chat UI's internal name, or point a tool at the inference
   API's internal name — both resolve via the gateway and terminate TLS at its proxy.
 - **Off-LAN (the usual case for the laptop):** there is no inbound port at the WAN edge by
-  design, so access is an **outbound SSH tunnel through the gateway** — the inference API
-  (and, if wanted, the UI) appears on a local port on the laptop, encrypted end to end, with
-  nothing forwarded anywhere. A small persistent service keeps that tunnel up. Reaching it
-  from the *open internet* — not just the same upstream network — without exposing a WAN
-  port is a planned overlay-network step (see the [roadmap](../roadmap.md)).
+  design, so the laptop joins a **split-tunnel WireGuard overlay** instead. Both ends dial
+  *out* to a small off-fleet hub with a fixed address — the gateway included — so the
+  internal names resolve and the chat UI and API answer from anywhere, open internet
+  included, while the gateway accepts no inbound connection at all
+  ([the road that never left the house](../log/2026-08-wireguard-hub.md)). This replaced an
+  earlier outbound SSH tunnel, which only ever worked from the same upstream network.
 
 ## Storage, later
 

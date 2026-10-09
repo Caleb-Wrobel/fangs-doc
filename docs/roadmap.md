@@ -95,6 +95,11 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **A phone call to a sleeping PC** — a Discord bot (outbound-only, on a cloud box outside the
+  house) wakes, holds, releases and sleeps the fleet's on-demand machine through three
+  one-way forced-command keys; timed holds expire on the machine itself. Validation
+  found a self-test running after its own gate and a sleep command that over-promised;
+  both fixed, the promise withdrawn ([log](log/2026-10-a-phone-call-to-a-sleeping-pc.md)).
 - ✅ **The couch-room board learns the next few hours** — the living-room kiosk's forecast
   moved from the national weather service's twice-daily text outlook to an hourly
   **now / +3h / +6h** look-ahead, because the people who glance at it do so on the way out

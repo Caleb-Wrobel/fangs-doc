@@ -85,6 +85,7 @@ held in reserve for a future outward-facing job.
     own database.
 - **[Build log](log/README.md)** — dated entries on what got built and what fought
   back, newest first. The most recent few:
+  - [2026-10 — A phone call to a sleeping PC](log/2026-10-a-phone-call-to-a-sleeping-pc.md)
   - [2026-08 — A spry little forge](log/2026-08-forgejo-spike.md)
   - [2026-08 — The couch learns to read](log/2026-08-couch-room-redesign.md)
   - [2026-08 — What counts as drifted](log/2026-08-drift-check.md)

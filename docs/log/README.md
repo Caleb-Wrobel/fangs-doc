@@ -3,6 +3,13 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-10** — [A phone call to a sleeping PC](2026-10-a-phone-call-to-a-sleeping-pc.md):
+  a Discord slash command in front of the fleet's one sleep-on-demand machine — wake it, hold
+  it awake for a while, release it, ask its state — from a phone, with a bot that dials out and
+  listens on nothing, three one-way forced-command keys, and holds that expire on the machine
+  itself. Three things fought back: a self-test that ran *after* the restart it was meant to
+  gate, a "sleep regardless" command that replied yes while the OS quietly said no, and a test
+  that turned out to be impossible by construction. The scorecard says what was never run.
 - **2026-08** — [A spry little forge](2026-08-forgejo-spike.md): a standing question about
   whether the smallest node in the fleet could actually run a self-hosted git forge got answered
   with the real thing, deployed on purpose to be thrown away. Real usage — a full mirrored

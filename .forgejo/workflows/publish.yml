@@ -1,0 +1,63 @@
+name: publish
+
+# The only road from Forgejo to GitHub. On every push to main, scan the commits
+# GitHub hasn't seen yet with the same pinned gitleaks and rules as leak-check, and
+# only if that comes back clean, push main (and nothing else) to the public GitHub
+# repo, where .github/workflows/mkdocs.yml builds the Pages site. A failed scan
+# publishes nothing.
+#
+# The push is never forced. If GitHub's main is not an ancestor of ours (history
+# was rewritten), the job stops and a human publishes deliberately; see
+# homelab/fangs-doc#2.
+#
+# Secret: PUBLISH_DEPLOY_KEY, the private half of a write deploy key on the
+# GitHub repo. Runner: morel, host mode (label `host`), no container.
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: host
+    steps:
+      - name: Scan unpublished commits, then push main to GitHub
+        env:
+          DEPLOY_KEY: ${{ secrets.PUBLISH_DEPLOY_KEY }}
+          PUBLISH_SHA: ${{ github.sha }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
+          TOKEN: ${{ github.token }}
+          GITHUB_REMOTE: git@github.com:Caleb-Wrobel/fangs-doc.git
+        run: |
+          set -euo pipefail
+          # A plain git clone instead of actions/checkout: no action to fetch, and no
+          # forge hostname written into a file that goes public.
+          git init -q .
+          git -c "http.extraHeader=Authorization: token ${TOKEN}" fetch -q --no-tags "$REPO_URL" \
+            '+refs/heads/main:refs/remotes/origin/main'
+          git checkout -q --detach "$PUBLISH_SHA"
+
+          if [ -z "$DEPLOY_KEY" ]; then
+            echo "publish: PUBLISH_DEPLOY_KEY is not set; nothing published" >&2
+            exit 1
+          fi
+
+          ssh_dir=$(mktemp -d)
+          trap 'rm -rf "$ssh_dir"' EXIT
+          printf '%s\n' "$DEPLOY_KEY" > "$ssh_dir/key"
+          chmod 600 "$ssh_dir/key"
+          # GitHub's published host key (api.github.com/meta), pinned rather than learned.
+          echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' \
+            > "$ssh_dir/known_hosts"
+          export GIT_SSH_COMMAND="ssh -i $ssh_dir/key -o IdentitiesOnly=yes -o UserKnownHostsFile=$ssh_dir/known_hosts -o StrictHostKeyChecking=yes"
+
+          # What GitHub already serves is public already; only what's new needs the scan.
+          git fetch --no-tags "$GITHUB_REMOTE" "+refs/heads/main:refs/remotes/github/main"
+          if ! git merge-base --is-ancestor refs/remotes/github/main "$PUBLISH_SHA"; then
+            echo "publish: GitHub's main is not an ancestor of ${PUBLISH_SHA}; history was rewritten." >&2
+            echo "publish: refusing to force-push; publish by hand (homelab/fangs-doc#2)." >&2
+            exit 1
+          fi
+
+          bash ci/gitleaks.sh "refs/remotes/github/main..${PUBLISH_SHA}"
+          git push "$GITHUB_REMOTE" "${PUBLISH_SHA}:refs/heads/main"

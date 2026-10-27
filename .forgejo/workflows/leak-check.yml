@@ -1,0 +1,54 @@
+name: leak-check
+
+# Every commit in a PR to main, scanned by ci/gitleaks.sh against the leak rules.
+# Every commit, not just the tip: a value added and then removed inside the PR is
+# still in the history that would go public on merge.
+#
+# The rules and the scan script are taken from main, not from the PR, so a PR can't
+# loosen the check that judges it. (Where main doesn't have them yet, the PR's own
+# copies are used, which only happens for the PR that introduces them.) This
+# workflow file itself still comes from the PR; darby's review is the control
+# there, so changes to it, .gitleaks.toml or ci/gitleaks.sh go in PRs of their own.
+#
+# Runner: morel, host mode (label `host`), no container. Forgejo reads this
+# directory and ignores .github/workflows/, which is GitHub's Pages build.
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  leak-check:
+    runs-on: host
+    steps:
+      - name: Scan every commit in the PR
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
+          TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # A plain git clone instead of actions/checkout: no action to fetch, and no
+          # forge hostname written into a file that goes public.
+          git init -q .
+          git -c "http.extraHeader=Authorization: token ${TOKEN}" fetch -q --no-tags "$REPO_URL" \
+            '+refs/heads/*:refs/remotes/origin/*' '+refs/pull/*/head:refs/remotes/pull/*'
+          git checkout -q --detach "$HEAD_SHA"
+
+          # Fail closed if either end of the range is missing from the clone.
+          git cat-file -e "${BASE_SHA}^{commit}"
+          git cat-file -e "${HEAD_SHA}^{commit}"
+
+          gate=$(mktemp -d)
+          trap 'rm -rf "$gate"' EXIT
+          for f in .gitleaks.toml ci/gitleaks.sh; do
+            mkdir -p "$gate/$(dirname "$f")"
+            if git cat-file -e "${BASE_SHA}:${f}" 2>/dev/null; then
+              git show "${BASE_SHA}:${f}" > "$gate/$f"
+            else
+              cp "$f" "$gate/$f"
+            fi
+          done
+
+          bash "$gate/ci/gitleaks.sh" "${BASE_SHA}..${HEAD_SHA}" "$gate/.gitleaks.toml"

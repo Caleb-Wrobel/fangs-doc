@@ -33,8 +33,8 @@ in short, **never add**:
 
 Instead, describe **topology conceptually** ("the gateway → the switch → the
 nodes"), **roles by function** ("the gateway," "the NAS," "the smallest node"),
-and **mechanisms not magic strings**. Internal service names like
-`*.fangs.internal` are fine — they resolve nowhere public. If you are about to
+and **mechanisms not magic strings**. The pattern `*.fangs.internal` and bare
+node names are fine; a full hostname under that domain is not. If you are about to
 write a number that looks like an address or a string that looks like a
 credential, stop: it almost certainly does not belong here.
 

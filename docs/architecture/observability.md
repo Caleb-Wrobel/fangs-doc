@@ -174,8 +174,8 @@ and the day it stops being cheap is a measurement question left open on the
 ## Reaching the dashboards
 
 Grafana isn't exposed on its raw host:port. It's fronted by the
-[reverse proxy](tls-proxy.md): from anywhere on the LAN you browse
-`https://grafana.fangs.internal`, the gateway terminates TLS with the internal CA
+[reverse proxy](tls-proxy.md): from anywhere on the LAN you browse to Grafana's
+own `*.fangs.internal` name, the gateway terminates TLS with the internal CA
 and proxies to Grafana. On the trusted LAN, Grafana serves a **read-only anonymous view** (so
 the unattended kiosk — and any quick glance from a browser — needs no login), while full
 admin sits behind its own auth. Clean padlock, no port numbers to remember.

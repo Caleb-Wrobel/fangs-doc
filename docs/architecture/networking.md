@@ -48,10 +48,10 @@ DNS is split into two jobs on purpose:
 - **Unbound** is the resolver. Interestingly it does **not** do full recursion
   from the root servers; it **forwards over DNS-over-TLS** to an upstream resolver.
 
-Why forward instead of recurse? Behind the VPN, outbound port 53 is intercepted,
-which breaks the many small UDP/53 conversations full recursion depends on.
-DNS-over-TLS rides a single encrypted 853 connection that passes cleanly through
-the tunnel. So the constraint (a hijacked :53) *chose* the architecture
+Why forward instead of recurse? Behind the VPN, outbound plain DNS is intercepted,
+which breaks the many small conversations full recursion depends on.
+DNS-over-TLS rides a single encrypted connection that passes cleanly through
+the tunnel. So the constraint (a hijacked DNS port) *chose* the architecture
 (forward-over-DoT), not the other way around.
 
 Every node also carries the full fleet by name locally, so host-to-host naming

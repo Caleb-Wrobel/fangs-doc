@@ -29,7 +29,7 @@ describes the *shape* of the system, not its credentials or its coordinates.
   map. The ASCII diagram in [overview](architecture/overview.md) is the right
   altitude.
 - **Roles by function** — "the gateway," "the NAS," "the observability node," "the
-  smallest node." Wolf hostnames are fine as labels; their *addresses* are not.
+  smallest node." Hostnames are fine as labels; their *addresses* are not.
 - **Internal service names** — `*.fangs.internal` is fine (it resolves nowhere
   public and reveals nothing). Pair it with the *idea* of the backend, not a
   `host:port`.

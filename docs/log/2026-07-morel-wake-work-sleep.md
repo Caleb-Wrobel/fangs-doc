@@ -22,9 +22,8 @@ through it.
 
 ## A name for a thing that comes and goes
 
-The naming convention had drifted from wolves to a quieter theme: short nouns for emergent
-phenomena — a threshold, a growth signal, the thing the light chases. The new machine wanted a name
-in that key, and one fit almost too well: a **fungus that fruits briefly when conditions are right
+Every hostname in the fleet is five letters, named for that node's role. This one's role was to
+stay out of sight until it was needed, and one name fit almost too well: a **fungus that fruits briefly when conditions are right
 and otherwise persists, unseen, underground.** The visible part is occasional; the organism is
 always there. For a heavy box that would spend most of its life asleep on its own storage, waking
 only when summoned — and that was *literally* already underground before the rest of the fleet — the

@@ -1,7 +1,7 @@
 # context.md — orientation for AI consumers
 
 You are reading **fangs-doc**, the public documentation repo for *fangs*, a small
-wolf-themed Raspberry Pi homelab. This file orients an AI agent that is either
+Raspberry Pi homelab. This file orients an AI agent that is either
 **answering questions from these docs** or **proposing edits to them**. Read it
 first; it tells you what this repo is, what it is *not*, and the one rule you must
 never break.
@@ -122,7 +122,7 @@ and one amd64 box — plus one node deliberately outside the LAN entirely:
 
 Only the gateway touches the WAN; the others are peers behind it. The security
 boundary that matters is the WAN edge, not host-to-host — the docs call this
-"visibility over least-privilege inside the LAN." (The repo uses the wolf hostnames
+"visibility over least-privilege inside the LAN." (The repo uses the hostnames
 as labels; their *addresses* are intentionally absent.) The off-fleet box is
 not behind the gateway and not a peer of the other five — it is structurally
 outside the LAN on purpose, so it can still speak when the LAN can't. A second,

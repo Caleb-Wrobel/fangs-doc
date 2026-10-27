@@ -1,6 +1,6 @@
 # fangs — homelab build log
 
-A public build log and architecture notebook for **fangs**, a small wolf-themed
+A public build log and architecture notebook for **fangs**, a small
 Raspberry Pi homelab. This repo is the *thinking-out-loud* half of the project:
 architecture, design rationale, a running build log, and where things are headed.
 The Ansible that actually configures the fleet lives in a separate private repo.

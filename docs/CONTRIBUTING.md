@@ -30,9 +30,10 @@ describes the *shape* of the system, not its credentials or its coordinates.
   altitude.
 - **Roles by function** — "the gateway," "the NAS," "the observability node," "the
   smallest node." Wolf hostnames are fine as labels; their *addresses* are not.
-- **Internal service names** — `*.fangs.internal` is fine (it resolves nowhere
-  public and reveals nothing). Pair it with the *idea* of the backend, not a
-  `host:port`.
+- **Internal service names** — the pattern `*.fangs.internal` is fine, and so are
+  bare node names. A full hostname under that domain is not: write "Grafana's
+  internal name," not the name itself. Pair it with the *idea* of the backend,
+  not a `host:port`.
 - **Mechanisms, not magic strings** — explain *that* a kernel flag enables PSI and
   *why*; don't paste the exact regex or file path if it isn't needed to make the
   point.

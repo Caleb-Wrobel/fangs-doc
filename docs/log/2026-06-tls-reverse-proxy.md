@@ -54,7 +54,7 @@ The proxy listens on the **LAN side only** — the gateway's LAN address plus
 loopback — and is *never* published on the WAN edge. The gateway is the boundary
 that matters, and this listener sits firmly behind it:
 
-- From the LAN: browse `https://grafana.fangs.internal` directly.
+- From the LAN: browse to Grafana's `*.fangs.internal` name directly.
 - From off-LAN: there's no route by design. Join the network, or tunnel in through
   the gateway.
 

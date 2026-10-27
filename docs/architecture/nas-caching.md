@@ -101,7 +101,7 @@ before the nodes that would benefit from it come online.
 
 cream runs **Zot**, an OCI container-image registry, so the fleet can pull
 container images from inside the network instead of from the public internet every
-time. It's reachable through the reverse proxy at `https://zot.fangs.internal`
+time. It's reachable through the reverse proxy under its own internal name
 (see [TLS & reverse proxy](tls-proxy.md)).
 
 How it's run is itself a small statement of the fleet's container conventions:

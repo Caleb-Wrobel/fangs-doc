@@ -76,7 +76,7 @@ touch-up. That is the feature working as intended: not alarms, just the wire, wr
 
 A transcriber nobody reads is a disk heater, so the first consumer followed the same day: a
 provisioned **Network dashboard** — top talkers, per-client DNS rates, top queried names, TLS
-server names, and a ticker for the oddity channels. Fleet nodes display under their wolf names;
+server names, and a ticker for the oddity channels. Fleet nodes display under their hostnames;
 anything unrecognized stays a raw address on purpose, because an unfamiliar number on the board
 *is* the signal. It worked immediately: two unknown addresses turned out to be a phone (iOS's
 per-network randomized MAC) and — better — the Apple base station itself, which had quietly

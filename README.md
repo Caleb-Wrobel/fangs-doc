@@ -1,6 +1,6 @@
 # fangs — homelab build log
 
-A public build log and architecture notebook for **fangs**, a small wolf-themed
+A public build log and architecture notebook for **fangs**, a small
 Raspberry Pi homelab — its own gateway, firewall, DNS, VPN egress, internal
 certificate authority, and metrics-and-logs stack, built to *learn the whole
 stack by owning it*.

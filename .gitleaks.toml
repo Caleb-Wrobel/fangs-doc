@@ -1,0 +1,134 @@
+# fangs-doc leak rules — the gate between this repo and the public internet.
+#
+# Read by .forgejo/workflows/leak-check.yml (every commit in a PR to main) and
+# .forgejo/workflows/publish.yml (every commit about to reach GitHub), both on the
+# gitleaks version pinned in ci/gitleaks.sh. CONTRIBUTING.md's sanitization rules
+# are the prose; this file is the part a machine enforces.
+#
+# Every custom rule captures the candidate in group 1 (secretGroup = 1) and fences
+# it with "not part of a longer token" guards instead of \b, so a version string or
+# a longer identifier never matches half-way. Allowlists test that captured value.
+#
+# Changing this file weakens or strengthens the gate for every later PR. Keep such
+# changes in a PR of their own, so the review is about the rules and nothing else.
+
+title = "fangs-doc leak rules"
+
+# The stock secret rules: API keys, private keys, tokens, and the rest.
+[extend]
+useDefault = true
+
+# ---------------------------------------------------------------- addressing --
+
+[[rules]]
+id = "ipv4-address"
+description = "IPv4 address or CIDR (exact addressing never goes public)"
+regex = '''(?:^|[^0-9A-Za-z.])((?:(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(?:/[0-9]{1,2})?)(?:$|[^0-9A-Za-z.]|\.(?:$|[^0-9]))'''
+secretGroup = 1
+tags = ["addressing"]
+
+  [[rules.allowlists]]
+  description = "documentation ranges (RFC 5737), loopback, the unspecified address"
+  regexes = [
+    '''^192\.0\.2\.''',
+    '''^198\.51\.100\.''',
+    '''^203\.0\.113\.''',
+    '''^127\.''',
+    '''^0\.0\.0\.0(?:/0)?$''',
+  ]
+
+[[rules]]
+id = "ipv6-address"
+description = "IPv6 address or prefix, full form"
+regex = '''(?i)(?:^|[^0-9a-z:])((?:[0-9a-f]{1,4}:){7}[0-9a-f]{1,4}(?:/[0-9]{1,3})?)(?:$|[^0-9a-z:])'''
+secretGroup = 1
+tags = ["addressing"]
+
+  [[rules.allowlists]]
+  description = "documentation prefix (RFC 3849)"
+  regexes = ['''(?i)^2001:0?db8:''']
+
+[[rules]]
+id = "ipv6-address-compressed"
+description = "IPv6 address or prefix, compressed (::) form"
+regex = '''(?i)(?:^|[^0-9a-z:])((?:[0-9a-f]{1,4}:){1,7}:(?:[0-9a-f]{1,4}(?::[0-9a-f]{1,4}){0,6})?(?:/[0-9]{1,3})?|::[0-9a-f]{1,4}(?::[0-9a-f]{1,4}){0,6}(?:/[0-9]{1,3})?)(?:$|[^0-9a-z:])'''
+secretGroup = 1
+tags = ["addressing"]
+
+  [[rules.allowlists]]
+  description = "documentation prefix (RFC 3849) and loopback"
+  regexes = [
+    '''(?i)^2001:0?db8:''',
+    '''^::1$''',
+  ]
+
+[[rules]]
+id = "fangs-internal-fqdn"
+description = "Full *.fangs.internal hostname (bare node names are fine; FQDNs are not)"
+regex = '''(?i)(?:^|[^0-9a-z.-])((?:[0-9a-z](?:[0-9a-z-]*[0-9a-z])?\.)+fangs\.internal)(?:$|[^0-9a-z-])'''
+secretGroup = 1
+tags = ["addressing"]
+
+  [[rules.allowlists]]
+  description = "placeholders that name no real host"
+  regexes = ['''(?i)^(?:name|thing|example|service|host)\.fangs\.internal$''']
+
+# --------------------------------------------------------------------- ports --
+# Only 22, 80 and 443 may appear. Three shapes: host:port, "port N", N/tcp.
+
+[[rules]]
+id = "port-after-host"
+description = "Port number after a hostname (host:port)"
+regex = '''(?i)(?:[a-z]|\])\:([0-9]{2,5})(?:$|[^0-9])'''
+secretGroup = 1
+tags = ["port"]
+
+  [[rules.allowlists]]
+  regexes = ['''^(?:22|80|443)$''']
+
+[[rules]]
+id = "port-keyword"
+description = "Port number named in prose or config (port N, ports N, port=N)"
+regex = '''(?i)(?:^|[^0-9a-z])ports?\s*(?:[:=#]\s*|number\s+)?([0-9]{2,5})(?:$|[^0-9])'''
+secretGroup = 1
+tags = ["port"]
+
+  [[rules.allowlists]]
+  regexes = ['''^(?:22|80|443)$''']
+
+[[rules]]
+id = "port-protocol-suffix"
+description = "Port number before its protocol (N/tcp)"
+regex = '''(?i)(?:^|[^0-9a-z])([0-9]{2,5})/(?:tcp|udp)(?:$|[^0-9a-z])'''
+secretGroup = 1
+tags = ["port"]
+
+  [[rules.allowlists]]
+  regexes = ['''^(?:22|80|443)$''']
+
+[[rules]]
+id = "port-protocol-prefix"
+description = "Port number after its protocol (tcp/N, udp N)"
+regex = '''(?i)(?:^|[^0-9a-z])(?:tcp|udp)[/ ]([0-9]{2,5})(?:$|[^0-9])'''
+secretGroup = 1
+tags = ["port"]
+
+  [[rules.allowlists]]
+  regexes = ['''^(?:22|80|443)$''']
+
+# ----------------------------------------------------------------- hardware --
+
+[[rules]]
+id = "mac-address"
+description = "MAC address (hardware identifiers never go public)"
+regex = '''(?i)(?:^|[^0-9a-z:-])([0-9a-f]{2}(?::[0-9a-f]{2}){5}|[0-9a-f]{2}(?:-[0-9a-f]{2}){5})(?:$|[^0-9a-z:-])'''
+secretGroup = 1
+tags = ["hardware"]
+
+  [[rules.allowlists]]
+  description = "all-zeros, broadcast, and the documentation block (RFC 7042)"
+  regexes = [
+    '''^00[:-]00[:-]00[:-]00[:-]00[:-]00$''',
+    '''(?i)^ff[:-]ff[:-]ff[:-]ff[:-]ff[:-]ff$''',
+    '''(?i)^00[:-]00[:-]5e[:-]00[:-]53[:-]''',
+  ]

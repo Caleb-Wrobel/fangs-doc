@@ -23,7 +23,7 @@ output blind** — it re-checks the conclusion before accepting it.
 ## The worked example
 
 The feature was a dashboard refresh. The fleet's graphs identified each node by a bare
-network address — unreadable at a glance and out of step with the wolf names used for
+network address — unreadable at a glance and out of step with the hostnames used for
 everything else. The job: label every node by its name, and add a small kiosk-friendly set
 of boards (an at-a-glance fleet overview, a pressure/saturation view, a logs view).
 Straightforward.

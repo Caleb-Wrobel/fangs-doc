@@ -20,24 +20,36 @@ The gateway has two sides:
 
 ## VPN egress and the kill switch
 
-Client traffic egresses through a commercial VPN using a WireGuard-based
-transport. The notable design choice is **where the kill switch lives**: not in
-the VPN client, but in the firewall itself.
+Everything the LAN sends to the internet leaves the **edge router** through a
+WireGuard tunnel to a commercial VPN, pinned to one server. There is no vendor
+VPN client anywhere: the tunnel is a plain WireGuard interface on the router,
+and the policy is the router's own. The notable design choice is still **where
+the kill switch lives**: in the firewall, not in a client.
 
-The firewall's forward chain permits client egress *only* via the tunnel
-interface. There is simply no rule that would forward LAN traffic straight to the
-WAN. So when the tunnel is down, client traffic isn't "blocked" by a feature —
-there's no path for it at all. Fail-closed by construction.
+- **Policy routing** sends LAN-sourced traffic to a separate table whose only
+  default route is the tunnel. Local destinations (the LAN, the remote-access
+  tunnel, the upstream router's subnet) bypass it.
+- **The kill switch** is a forward-chain drop for anything leaving through the
+  upstream port in the clear. With the tunnel down, client traffic has no path
+  at all. Fail-closed by construction, and a dead tunnel is a LAN-wide internet
+  outage on purpose.
+- **The router's own traffic stays outside the tunnel.** So does the
+  remote-access tunnel, so the house stays manageable from outside while the
+  VPN is down.
+- **One switch.** A single variable tears the whole thing down and restores the
+  plain upstream; the same variable puts it back. The runbook for a lapsed
+  subscription, a provider swap or a dead server sits next to the role.
 
-The VPN client's *own* kill switch is deliberately turned **off**: it's redundant
-with the firewall rule and, worse, it also blocks the gateway's *own* management
-and update traffic when the tunnel drops. Letting the firewall own the policy
-keeps the box itself reachable for maintenance.
+The catch is alerting. A dead tunnel also cuts the observability node off from
+the internet, so the tunnel's own alert can't be delivered while it fires. The
+pager that works during an outage is an off-site heartbeat that notices the
+node has gone quiet. (The full story is in the
+[build log](../log/2026-11-vpn-egress-on-the-router.md).)
 
-> **Gotcha that cost real time.** The VPN client also has a "firewall" setting
-> distinct from its kill switch — and when on, it silently dropped LAN DHCP.
-> Lesson: a vendor "firewall" toggle can stomp on services you're managing
-> yourself. Turn it off and own the policy in one place.
+> **Gotcha from the earlier design.** The VPN used to run as the vendor's client
+> on a Pi gateway. That client's "firewall" setting, distinct from its kill
+> switch, silently dropped LAN DHCP. Lesson: a vendor firewall toggle can stomp
+> on services you're managing yourself. Own the policy in one place.
 
 ## DNS
 

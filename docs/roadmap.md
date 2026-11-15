@@ -95,6 +95,11 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **VPN egress on the edge router** — the whole LAN leaves through a fail-closed WireGuard
+  tunnel on the router, with a one-variable switch back to the plain upstream; both directions
+  and the kill switch tested by breaking them. Validation found the tunnel's own alert can never
+  be delivered during an outage; the off-site heartbeat is the pager
+  ([log](log/2026-11-vpn-egress-on-the-router.md)).
 - ✅ **A phone call to a sleeping PC** — a Discord bot (outbound-only, on a cloud box outside the
   house) wakes, holds, releases and sleeps the fleet's on-demand machine through three
   one-way forced-command keys; timed holds expire on the machine itself. Validation

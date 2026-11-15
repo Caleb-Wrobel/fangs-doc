@@ -3,6 +3,12 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-11** — [The alarm that rides the tunnel](2026-11-vpn-egress-on-the-router.md):
+  the whole LAN's egress moves into a fail-closed WireGuard tunnel on the edge router, with one
+  variable to switch back. A provider key that never compared equal (it comes unclamped), a
+  factory fast path that cost more speed than the tunnel did, a resolver that stayed dead for
+  nine minutes after the tunnel came back, and the headline: an alert that travels over the path
+  it watches can only fire when it can't be delivered. The off-site heartbeat is the real pager.
 - **2026-10** — [A phone call to a sleeping PC](2026-10-a-phone-call-to-a-sleeping-pc.md):
   a Discord slash command in front of the fleet's one sleep-on-demand machine — wake it, hold
   it awake for a while, release it, ask its state — from a phone, with a bot that dials out and

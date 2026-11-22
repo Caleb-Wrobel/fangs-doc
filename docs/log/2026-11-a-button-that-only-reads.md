@@ -101,10 +101,10 @@ run shows pending package upgrades and a handful of long-standing items that
 always report changed in check mode. A permanently red job tells you nothing,
 and you learn to ignore it.
 
-So that moved to the next rung, the nightly unattended check, as its first
-item. It gets a per-host drift summary, a short known-drift list where every
+So that moved to the next rung, a weekly unattended drift report, as its
+first item. It gets a per-host drift summary, a short known-drift list where every
 entry has a reason, and a red job only for a change that isn't on the list.
-Nobody reads a half-hour log at 3 a.m.; it has to say so.
+Nobody reads a half-hour log on a Sunday morning; the job has to say so.
 
 ## What I'd tell past me
 

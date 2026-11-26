@@ -3,6 +3,11 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-11** — [The router hands out the leases](2026-11-dhcp-on-the-router.md): the LAN's
+  DHCP moves from the Pi to the edge router, which also becomes the second DNS server (its
+  upstream inside the VPN tunnel, failing closed) and the first time server. One address per MAC
+  forced WiFi failover out first; a zone-wide "no such name" entry hid every fleet name; an
+  unsynced router says so, and the nodes skip it. The old server stays stopped as the rollback.
 - **2026-11** — [A button that only reads](2026-11-a-button-that-only-reads.md): a Run button
   in the forge that checks the whole fleet against `main` from the ops node, in check mode, with
   the runner holding no keys and a root-owned helper deciding what runs. A branch tried fourteen

@@ -36,13 +36,14 @@ the pieces fit, what broke on the way, and what I'm thinking about building next
 
 | Host    | Hardware       | Role          | Carries |
 |---------|----------------|---------------|---------|
-| `limen` | Pi 5 (4 GB)    | Gateway + observability | Routing / NAT / firewall, VPN egress, recursive DNS, passive flow transcription (Zeek), observability stack (Prometheus + Grafana + Loki) |
+| `nexus` | Dedicated router | Edge router | Routing / NAT / firewall, the LAN switch and WiFi, fail-closed VPN egress, DHCP, second DNS server (DoH inside the tunnel), first time server, remote-access spoke |
+| `limen` | Pi 5 (4 GB)    | LAN services + observability | Primary DNS (forwards over DNS-over-TLS), the battery-backed time source, reverse proxy, passive flow transcription (Zeek), observability stack (Prometheus + Grafana + Loki) |
 | `cream` | Pi 3B+         | NAS / caching / forge | Network storage, package cache, image registry, nightly log + database backups, self-hosted git forge (Forgejo) |
 | `skoll` | Pi 3B          | Kiosk         | Grafana kiosk on a 7″ touchscreen in the living room — weather now and over the next few hours, severe-weather alerts, and whether the internet is up |
 | `auxin` | Pi 5 (16 GB)   | Local AI / data | LLM inference (Ollama) + chat front-end (Open WebUI), embeddings, Postgres + pgvector data layer |
 | `morel` | amd64 (24 GB, GTX 970) | Batch / GPU | GPU inference (Ollama), the forge's CI runner, Wake-on-LAN wake-work-sleep — asleep in S3 until summoned |
 
-`limen` is the only node on the WAN edge; everything else sits behind it on a
+`nexus` is the only box on the WAN edge; everything else sits behind it on a
 flat, trusted LAN.
 
 ## Outside the house
@@ -85,6 +86,7 @@ held in reserve for a future outward-facing job.
     own database.
 - **[Build log](log/README.md)** — dated entries on what got built and what fought
   back, newest first. The most recent few:
+  - [2026-11 — The router hands out the leases](log/2026-11-dhcp-on-the-router.md)
   - [2026-11 — The alarm that rides the tunnel](log/2026-11-vpn-egress-on-the-router.md)
   - [2026-10 — A phone call to a sleeping PC](log/2026-10-a-phone-call-to-a-sleeping-pc.md)
   - [2026-08 — A spry little forge](log/2026-08-forgejo-spike.md)

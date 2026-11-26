@@ -57,6 +57,7 @@ nav:
   - Build Log:
       - Index: log/README.md
       - A Button That Only Reads: log/2026-11-a-button-that-only-reads.md
+      - The Alarm That Rides the Tunnel: log/2026-11-vpn-egress-on-the-router.md
       - A Phone Call to a Sleeping PC: log/2026-10-a-phone-call-to-a-sleeping-pc.md
       - A Spry Little Forge: log/2026-08-forgejo-spike.md
       - The Couch Learns to Read: log/2026-08-couch-room-redesign.md

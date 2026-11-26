@@ -3,6 +3,12 @@
 Dated entries on what got built, what fought back, and what I'd tell past me.
 Newest first.
 
+- **2026-11** — [A button that only reads](2026-11-a-button-that-only-reads.md): a Run button
+  in the forge that checks the whole fleet against `main` from the ops node, in check mode, with
+  the runner holding no keys and a root-owned helper deciding what runs. A branch tried fourteen
+  ways to steer it and got a check of `main` every time. Three things fought back: one sleeping
+  machine that ended the entire run, a cancel that killed `sudo` but never reached the check
+  underneath, and a green job carrying a planted drift, because "it ran" isn't "nothing drifted".
 - **2026-11** — [The alarm that rides the tunnel](2026-11-vpn-egress-on-the-router.md):
   the whole LAN's egress moves into a fail-closed WireGuard tunnel on the edge router, with one
   variable to switch back. A provider key that never compared equal (it comes unclamped), a

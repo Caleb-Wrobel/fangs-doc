@@ -95,6 +95,10 @@ Still on its list:
 
 ## Done recently
 
+- ✅ **DHCP, second DNS and first time server on the edge router** — the leases move off the Pi,
+  generated from the same inventory list; the router's DNS upstream rides the VPN tunnel and fails
+  closed, and an unsynced router is skipped as a time source. The Pi's old server stays stopped
+  as a one-variable rollback, rehearsed both ways ([log](log/2026-11-dhcp-on-the-router.md)).
 - ✅ **VPN egress on the edge router** — the whole LAN leaves through a fail-closed WireGuard
   tunnel on the router, with a one-variable switch back to the plain upstream; both directions
   and the kill switch tested by breaking them. Validation found the tunnel's own alert can never

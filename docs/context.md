@@ -108,19 +108,20 @@ Start at the [home page](index.md) for the human framing. Then:
 
 ## The fleet at a glance (roles, never addresses)
 
-Five nodes on a flat, trusted LAN behind one gateway — four single-board computers
+Five nodes on a flat, trusted LAN behind one edge router — four single-board computers
 and one amd64 box — plus one node deliberately outside the LAN entirely:
 
 | Node        | Role               | Carries (conceptually)                                  |
 |-------------|--------------------|---------------------------------------------------------|
-| gateway     | WAN edge + obs     | routing/NAT/firewall, VPN egress + kill switch, DNS, and the observability stack (metrics, dashboards, logs) |
+| edge router | WAN edge + LAN plumbing | routing/NAT/firewall, the switch and WiFi, VPN egress + kill switch, DHCP, the second DNS server, the first time server |
+| LAN services | DNS, time + obs | the primary resolver, the battery-backed time source, the reverse proxy, and the observability stack (metrics, dashboards, logs) |
 | NAS         | storage/cache/forge | file shares, package cache, image registry, nightly log + database backups, the self-hosted git forge |
 | kiosk       | living-room display | a Grafana kiosk on a touchscreen: weather, a few-hours look-ahead, severe-weather alerts, and whether the internet is up |
 | AI / data   | local AI + data    | LLM inference + a chat UI, and a Postgres + pgvector data layer |
 | batch / GPU | summoned muscle    | GPU inference and the forge's CI runner, woken on demand by Wake-on-LAN and asleep otherwise |
 | off-fleet box | outside witness + overlay hub | a small public-cloud instance that (1) accepts a heartbeat *pushed out* by the gateway and pages if it stops arriving, and (2) is the fixed address the remote-access WireGuard overlay dials out to — gateway included, so the gateway takes no inbound connections |
 
-Only the gateway touches the WAN; the others are peers behind it. The security
+Only the edge router touches the WAN; the others are peers behind it. The security
 boundary that matters is the WAN edge, not host-to-host — the docs call this
 "visibility over least-privilege inside the LAN." (The repo uses the hostnames
 as labels; their *addresses* are intentionally absent.) The off-fleet box is
